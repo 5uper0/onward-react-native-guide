@@ -1,0 +1,1773 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>День 1: React Fundamentals для iOS разработчика</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro", "Segoe UI", Roboto, monospace;
+            background: #0a0a0a;
+            color: #e2e8f0;
+            line-height: 1.6;
+        }
+        .slide { display: none; min-height: 100vh; padding: 40px; }
+        .slide.active { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        
+        /* Slide themes */
+        .slide-intro { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); justify-content: center; align-items: center; text-align: center; }
+        .slide-concept { background: #0f172a; }
+        .slide-code { background: #0c0c0c; }
+        .slide-exercise { background: linear-gradient(135deg, #1e3a5f 0%, #0d2137 100%); }
+        .slide-solution { background: linear-gradient(135deg, #134e4a 0%, #0d3331 100%); }
+        
+        h1 { font-size: 2.8em; margin-bottom: 20px; color: #60a5fa; }
+        h2 { font-size: 2em; margin-bottom: 25px; color: #93c5fd; }
+        h3 { font-size: 1.4em; margin-bottom: 15px; color: #bfdbfe; }
+        p { font-size: 1.15em; margin: 12px 0; color: rgba(255,255,255,0.9); max-width: 900px; }
+        
+        .subtitle { font-size: 1.3em; color: #94a3b8; margin-top: 10px; }
+        .emoji-big { font-size: 3em; margin-bottom: 20px; }
+        
+        /* Code comparison */
+        .code-compare {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin: 20px 0;
+            max-width: 1200px;
+        }
+        .code-box {
+            background: #1e293b;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .code-box.swift { border-top: 4px solid #f97316; }
+        .code-box.react { border-top: 4px solid #3b82f6; }
+        .code-header {
+            background: rgba(0,0,0,0.3);
+            padding: 10px 15px;
+            font-weight: 600;
+            font-size: 0.9em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .code-header.swift { color: #f97316; }
+        .code-header.react { color: #3b82f6; }
+        .code-content {
+            padding: 15px;
+            font-family: "SF Mono", Menlo, monospace;
+            font-size: 0.85em;
+            line-height: 1.6;
+            overflow-x: auto;
+            white-space: pre;
+        }
+        
+        /* Single code block */
+        .code-block {
+            background: #1e293b;
+            border-left: 4px solid #3b82f6;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            max-width: 900px;
+            font-family: "SF Mono", Menlo, monospace;
+            font-size: 0.85em;
+            line-height: 1.6;
+            overflow-x: auto;
+            white-space: pre;
+        }
+        
+        /* Tips and warnings */
+        .tip {
+            background: rgba(59, 130, 246, 0.15);
+            border-left: 4px solid #3b82f6;
+            padding: 15px 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 20px 0;
+            max-width: 800px;
+        }
+        .tip::before { content: "💡 iOS аналогия: "; font-weight: 600; color: #60a5fa; }
+        
+        .warning {
+            background: rgba(245, 158, 11, 0.15);
+            border-left: 4px solid #f59e0b;
+            padding: 15px 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 20px 0;
+            max-width: 800px;
+        }
+        .warning::before { content: "⚠️ Важно: "; font-weight: 600; color: #f59e0b; }
+        
+        .key-insight {
+            background: rgba(34, 197, 94, 0.15);
+            border-left: 4px solid #22c55e;
+            padding: 15px 20px;
+            border-radius: 0 8px 8px 0;
+            margin: 20px 0;
+            max-width: 800px;
+        }
+        .key-insight::before { content: "🎯 Ключевое: "; font-weight: 600; color: #22c55e; }
+        
+        /* Exercise styling */
+        .exercise-box {
+            background: rgba(99, 102, 241, 0.1);
+            border: 2px solid #6366f1;
+            border-radius: 12px;
+            padding: 25px;
+            margin: 20px 0;
+            max-width: 900px;
+        }
+        .exercise-box h3 { color: #a5b4fc; margin-bottom: 15px; }
+        .exercise-box ol, .exercise-box ul { margin-left: 25px; }
+        .exercise-box li { margin: 8px 0; }
+        
+        .solution-toggle {
+            background: #22c55e;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            margin-top: 15px;
+        }
+        .solution-toggle:hover { background: #16a34a; }
+        
+        .solution-content {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(34, 197, 94, 0.1);
+            border-radius: 8px;
+        }
+        .solution-content.visible { display: block; }
+        
+        /* Lists */
+        ul, ol { margin-left: 25px; max-width: 800px; }
+        li { margin: 10px 0; font-size: 1.1em; }
+        
+        /* Navigation */
+        .controls {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            background: rgba(0,0,0,0.8);
+            padding: 15px 25px;
+            border-radius: 50px;
+            z-index: 100;
+            backdrop-filter: blur(10px);
+        }
+        .controls button {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.2s;
+        }
+        .controls button:hover { background: #2563eb; transform: scale(1.05); }
+        
+        .page-nav {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            gap: 8px;
+            z-index: 100;
+        }
+        .page-nav a {
+            background: rgba(0,0,0,0.7);
+            color: #94a3b8;
+            padding: 8px 14px;
+            border-radius: 20px;
+            text-decoration: none;
+            font-size: 0.85em;
+            backdrop-filter: blur(10px);
+            transition: all 0.2s;
+        }
+        .page-nav a:hover { background: rgba(59,130,246,0.5); color: white; }
+        .page-nav a.active { background: #3b82f6; color: white; }
+
+        .slide-counter {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 12px 18px;
+            border-radius: 25px;
+            font-size: 1em;
+            backdrop-filter: blur(10px);
+        }
+        
+        .progress-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: #3b82f6;
+            transition: width 0.3s;
+        }
+        
+        /* Responsive */
+        @media (max-width: 900px) {
+            .code-compare { grid-template-columns: 1fr; }
+            h1 { font-size: 2em; }
+            h2 { font-size: 1.5em; }
+            .slide { padding: 20px; }
+        }
+
+        /* Syntax highlighting */
+        .hl-k { color: #c084fc; }
+        .hl-s { color: #86efac; }
+        .hl-c { color: #64748b; font-style: italic; }
+        .hl-t { color: #fbbf24; }
+        .hl-n { color: #fb923c; }
+        .hl-d { color: #a78bfa; }
+    </style>
+</head>
+<body>
+    <div class="progress-bar" id="progress"></div>
+    <nav class="page-nav">
+        <a href="index.html">Главная</a>
+        <a href="day1-react-fundamentals-for-ios-devs.html" class="active">День 1</a>
+        <a href="day2-navigation-architecture-state.html">День 2</a>
+        <a href="day3-realtime-performance-practice.html">День 3</a>
+        <a href="assessment-guide.html">Assessment</a>
+    </nav>
+    <div class="slide-counter">День 1 • <span id="current">1</span> / <span id="total">25</span></div>
+
+    <!-- ======================= INTRO ======================= -->
+    <div class="slide slide-intro active">
+        <div class="emoji-big">🚀</div>
+        <h1>День 1: React для iOS разработчика</h1>
+        <p class="subtitle">От SwiftUI @State к useState за 3-4 часа</p>
+        <p style="margin-top: 30px; opacity: 0.7;">Стрелки ← → для навигации</p>
+    </div>
+
+    <!-- ======================= SLIDE: Mindset ======================= -->
+    <div class="slide slide-concept">
+        <h2>🧠 Смена парадигмы: что тебе УЖЕ знакомо</h2>
+        <p>Хорошие новости: ты уже знаешь 80% концепций, просто под другими именами.</p>
+
+        <p>Главное отличие React от SwiftUI — это <strong>модель ре-рендеринга</strong>. В SwiftUI система использует property wrappers (@State, @Binding) чтобы точечно отслеживать, какие View зависят от каких данных, и обновлять только их. React работает иначе: при изменении состояния компонент-функция <strong>вызывается целиком заново</strong>, возвращает новое дерево JSX, и React сравнивает его с предыдущим (reconciliation). Это означает, что каждый рендер — это полный вызов функции компонента сверху донизу.</p>
+
+        <p>Для iOS разработчика это ключевой сдвиг в мышлении. В UIKit ты явно мутировал view (<code>label.text = "new"</code>). В SwiftUI фреймворк сам решал, что перерисовать через diffing <code>some View</code>. В React ты описываешь UI как <strong>чистую функцию от состояния</strong>: <code>UI = f(state)</code>. Каждый раз когда state меняется, функция вызывается снова и React эффективно обновляет DOM через Virtual DOM diffing.</p>
+
+        <p>Понимание этого цикла рендеринга — фундамент всего остального. Все хуки (useState, useEffect, useMemo, useCallback) — это способы управлять поведением внутри этого цикла. Если ты понимаешь, что функция компонента вызывается при каждом изменении состояния, все остальное встанет на свои места.</p>
+        
+        <div class="code-compare" style="margin-top: 30px;">
+            <div class="code-box swift">
+                <div class="code-header swift">🍎 SwiftUI / iOS</div>
+                <div class="code-content">@State          → состояние View
+@Binding        → передача состояния вниз  
+@Published      → реактивные данные
+ObservableObject → shared state
+View            → компонент UI
+ViewModifier    → HOC / styled component
+onAppear        → lifecycle hook
+Combine         → реактивные потоки</div>
+            </div>
+            <div class="code-box react">
+                <div class="code-header react">⚛️ React Native</div>
+                <div class="code-content">useState        → состояние компонента
+props           → передача данных вниз
+Context/Redux   → shared state  
+React.FC        → функциональный компонент
+styled-components → стилизация
+useEffect       → lifecycle hook
+RxJS / React Query → реактивные потоки</div>
+            </div>
+        </div>
+        
+        <div class="key-insight">
+            React — это декларативный UI, как SwiftUI. Ты описываешь ЧТО показать, не КАК. Но в отличие от SwiftUI, где diffing происходит на уровне View struct, в React diffing происходит на уровне Virtual DOM — легковесного JavaScript-представления UI дерева. React сравнивает предыдущее и новое дерево, вычисляет минимальный набор изменений и применяет их к реальному UI.
+        </div>
+
+        <div class="warning">
+            Частая ошибка iOS разработчиков: думать, что React компонент "живет" между рендерами как объект. Нет — функция вызывается заново каждый раз. Все локальные переменные пересоздаются. Только useState и useRef сохраняют значения между рендерами (React хранит их в отдельной структуре, привязанной к позиции компонента в дереве).
+        </div>
+    </div>
+
+    <!-- ======================= SLIDE: JS Basics ======================= -->
+    <div class="slide slide-concept">
+        <h2>📝 JavaScript за 10 минут (для Swift разработчика)</h2>
+
+        <p>JavaScript и Swift внешне похожи, но фундаментально отличаются в системе типов. Swift — строго типизированный язык с compile-time проверками. JavaScript — динамически типизированный с неявным приведением типов (type coercion). Это значит, что <code>"5" + 3</code> в JS даст <code>"53"</code> (строка!), а <code>"5" - 3</code> даст <code>2</code> (число!). Такие сюрпризы — главная причина, почему в React Native проектах <strong>всегда используют TypeScript</strong>.</p>
+
+        <p>TypeScript добавляет статическую типизацию поверх JavaScript, но она <strong>стирается при компиляции</strong> — в runtime типов нет. Это значит, что TypeScript ловит ошибки на этапе написания кода (как Swift), но не защищает от невалидных данных из API в runtime (в отличие от Swift Codable, который бросает ошибку при несовпадении типов). Для runtime валидации в TS-проектах используют библиотеки вроде Zod или io-ts.</p>
+
+        <p>Ещё одно важное отличие: в Swift <code>nil</code> — это отсутствие значения в Optional, и компилятор заставляет тебя обработать этот случай. В JavaScript есть <strong>два</strong> "пустых" значения: <code>null</code> (явное отсутствие) и <code>undefined</code> (переменная не инициализирована). TypeScript помогает, но к этой двойственности нужно привыкнуть.</p>
+
+        <div class="code-compare">
+            <div class="code-box swift">
+                <div class="code-header swift">🍎 Swift</div>
+                <div class="code-content">// Переменные
+let name = "Oleh"      // immutable
+var count = 0          // mutable
+
+// Типы
+let age: Int = 30
+let names: [String] = ["A", "B"]
+let user: User? = nil
+
+// Функции
+func greet(name: String) -> String {
+    return "Hello, \(name)"
+}
+
+// Замыкания
+let double = { (x: Int) in x * 2 }
+names.map { $0.uppercased() }
+
+// Optional chaining
+user?.profile?.name</div>
+            </div>
+            <div class="code-box react">
+                <div class="code-header react">⚛️ JavaScript/TypeScript</div>
+                <div class="code-content">// Переменные
+const name = "Oleh";   // immutable (почти)
+let count = 0;         // mutable
+
+// Типы (TypeScript)
+const age: number = 30;
+const names: string[] = ["A", "B"];
+const user: User | null = null;
+
+// Функции
+function greet(name: string): string {
+    return `Hello, ${name}`;
+}
+
+// Arrow functions (замыкания)
+const double = (x: number) => x * 2;
+names.map(n => n.toUpperCase());
+
+// Optional chaining (ES2020)
+user?.profile?.name</div>
+            </div>
+        </div>
+        
+        <div class="tip">
+            <code>const</code> как <code>let</code> в Swift, <code>let</code> как <code>var</code>. Да, наоборот. Но есть нюанс: <code>const</code> в JS запрещает переприсваивание переменной, но <strong>не делает объект иммутабельным</strong>. <code>const arr = [1,2,3]; arr.push(4);</code> — это валидно! В Swift <code>let arr = [1,2,3]</code> действительно запрещает мутацию массива. Это фундаментальное отличие: в JS <code>const</code> защищает ссылку, не содержимое.
+        </div>
+
+        <div class="warning">
+            Главные ловушки type coercion для Swift-разработчика: <code>[] == false</code> (true!), <code>"" == false</code> (true!), <code>0 == ""</code> (true!). Всегда используй <code>===</code> (строгое сравнение) вместо <code>==</code>. В TypeScript линтер ESLint с правилом <code>eqeqeq</code> поймает это автоматически. Также: <code>typeof null === "object"</code> — это известный баг JavaScript с 1995 года, который никогда не починят.
+        </div>
+
+        <div class="tip">
+            Template literals (<code>`Hello, ${name}`</code>) — аналог Swift string interpolation (<code>"Hello, \(name)"</code>). Обрати внимание на обратные кавычки ` вместо обычных кавычек. Template literals также поддерживают многострочность без специального синтаксиса.
+        </div>
+    </div>
+
+    <!-- ======================= SLIDE: Destructuring ======================= -->
+    <div class="slide slide-concept">
+        <h2>🎁 Деструктуризация — твой новый друг</h2>
+        <p>В JS/TS это используется ВЕЗДЕ. Привыкай.</p>
+
+        <p>Деструктуризация — это не просто синтаксический сахар, а <strong>основной паттерн передачи данных в React</strong>. Каждый компонент получает один аргумент — объект <code>props</code>. Вместо того чтобы писать <code>props.team</code>, <code>props.onSelect</code> по всему компоненту, ты сразу извлекаешь нужные поля в параметрах функции: <code>function Card({ team, onSelect })</code>. Это делает код чище и сразу показывает, какие данные компонент использует.</p>
+
+        <p>В Swift ближайший аналог — pattern matching в switch/case для enum-ов: <code>case .success(let data)</code>. Но в JS деструктуризация работает для любых объектов и массивов, а не только для enum-ов. Деструктуризация массивов (<code>const [a, b] = array</code>) особенно важна для хуков: <code>useState</code> возвращает массив из двух элементов, и ты деструктуризуешь его в <code>[value, setValue]</code>. Имена переменных при деструктуризации массива ты выбираешь сам (в отличие от объектов, где имена должны совпадать с ключами).</p>
+
+        <p>Ещё один частый паттерн — spread и rest оператор (<code>...</code>). В параметрах функции <code>function Button({ title, ...rest })</code> означает "возьми title отдельно, а все остальные props собери в объект rest". Это как variadic parameters в Swift, но для именованных свойств. Этот паттерн используется повсеместно для проброса props в дочерние компоненты.</p>
+        
+        <div class="code-block">// Объекты
+const user = { name: "Oleh", age: 30, city: "Valencia" };
+const { name, age } = user;  // name = "Oleh", age = 30
+
+// С переименованием
+const { name: userName } = user;  // userName = "Oleh"
+
+// Массивы  
+const coords = [40.4168, -3.7038];
+const [lat, lng] = coords;  // lat = 40.4168
+
+// В параметрах функций (ОЧЕНЬ часто в React)
+function TeamCard({ team, onSelect }) {
+    return &lt;Text&gt;{team.name}&lt;/Text&gt;;
+}
+
+// Аналог в Swift:
+// func teamCard(team: Team, onSelect: () -> Void)</div>
+        
+        <div class="key-insight">
+            Когда видишь <code>{ something }</code> в параметрах функции — это деструктуризация props. Когда видишь <code>{ something }</code> внутри JSX — это JavaScript-выражение. Контекст определяет значение фигурных скобок. Это одна из причин, почему начинающие путаются — одинаковый синтаксис, разная семантика.
+        </div>
+
+        <div class="warning">
+            Деструктуризация с значениями по умолчанию: <code>function Card({ title = "Untitled", count = 0 })</code>. Это как default parameter values в Swift. Но осторожно: значение по умолчанию применяется только при <code>undefined</code>, не при <code>null</code>. Если передать <code>title={null}</code>, title будет <code>null</code>, а не <code>"Untitled"</code>. В Swift Optional с nil и отсутствие параметра — разные вещи, здесь похоже.
+        </div>
+
+        <div class="tip">
+            Вложенная деструктуризация тоже работает: <code>const { user: { name, age } } = data</code>. Но не злоупотребляй — глубокая деструктуризация ухудшает читаемость. Если объект глубоко вложен, лучше деструктуризовать в два шага.
+        </div>
+    </div>
+
+    <!-- ======================= SLIDE: Async/Await ======================= -->
+    <div class="slide slide-concept">
+        <h2>⏳ Async/Await — почти как в Swift</h2>
+
+        <p>Async/await в JavaScript появился позже, чем Promises (аналог Swift Concurrency поверх GCD). В основе лежит объект <code>Promise</code> — это контейнер для будущего значения. Promise может быть в трёх состояниях: pending (выполняется), fulfilled (успех), rejected (ошибка). <code>async/await</code> — это синтаксический сахар поверх Promise, как Swift async/await поверх continuation-based concurrency.</p>
+
+        <p>Ключевое отличие от Swift: в JavaScript <strong>нет ключевого слова <code>throws</code></strong>. Любая async функция может бросить ошибку, и TypeScript не заставит тебя её обработать. В Swift компилятор требует <code>try</code> перед каждым вызовом throwing-функции. В JS/TS ты должен сам помнить, что fetch может упасть, и обернуть вызов в <code>try/catch</code>. Это одна из самых частых причин необработанных ошибок в React-приложениях.</p>
+
+        <p>Ещё одно важное отличие: <code>try/catch</code> в JavaScript оборачивает <strong>блок кода</strong>, а не отдельные выражения. В Swift ты пишешь <code>let data = try await fetch()</code> — <code>try</code> привязан к конкретному вызову. В JS ты оборачиваешь весь блок в <code>try { ... } catch { ... }</code>, и любая ошибка внутри блока попадёт в один catch. Это менее гранулярно, но на практике достаточно — обычно ты хочешь обработать ошибку на уровне всей операции, а не отдельного шага.</p>
+
+        <p>Promise chains (<code>.then().catch().finally()</code>) — это старый стиль, но ты встретишь его в существующем коде. <code>fetch(url).then(res => res.json()).then(data => setData(data)).catch(err => setError(err))</code>. Async/await делает то же самое, но читается линейно, как синхронный код.</p>
+
+        <div class="code-compare">
+            <div class="code-box swift">
+                <div class="code-header swift">🍎 Swift async/await</div>
+                <div class="code-content">func fetchTeams() async throws -> [Team] {
+    let url = URL(string: "api/teams")!
+    let (data, _) = try await URLSession
+        .shared.data(from: url)
+    return try JSONDecoder()
+        .decode([Team].self, from: data)
+}
+
+// Использование
+Task {
+    do {
+        let teams = try await fetchTeams()
+        self.teams = teams
+    } catch {
+        print(error)
+    }
+}</div>
+            </div>
+            <div class="code-box react">
+                <div class="code-header react">⚛️ JavaScript async/await</div>
+                <div class="code-content">async function fetchTeams(): Promise&lt;Team[]&gt; {
+    const response = await fetch("api/teams");
+    if (!response.ok) {
+        throw new Error("Network error");
+    }
+    return response.json();  // автоматический JSON parse
+}
+
+// Использование
+try {
+    const teams = await fetchTeams();
+    setTeams(teams);
+} catch (error) {
+    console.error(error);
+}</div>
+            </div>
+        </div>
+        
+        <div class="tip">
+            <code>fetch</code> — это как <code>URLSession.shared.data(from:)</code>, только проще. Возвращает Promise (как Task). Но есть подвох: fetch считает HTTP 404 и 500 <strong>успешным</strong> ответом (Promise resolved), потому что сервер ответил. Ошибкой считается только сетевой сбой. Поэтому всегда проверяй <code>response.ok</code> (true для статусов 200-299). В Swift URLSession тоже не бросает ошибку на 404, но это чаще проверяют явно через HTTPURLResponse.statusCode.
+        </div>
+
+        <div class="warning">
+            В React нельзя сделать компонент async: <code>async function MyComponent()</code> — это ошибка. Асинхронная логика всегда живёт внутри <code>useEffect</code> или обработчиков событий. Это отличается от Swift, где View.body может неявно ждать @Published данные через ObservableObject. В React ты явно управляешь состояниями loading/error/data.
+        </div>
+
+        <div class="tip">
+            <code>Promise.all([fetch1(), fetch2()])</code> — аналог Swift <code>async let</code> для параллельного выполнения. <code>Promise.race()</code> — кто первый, тот и результат (полезно для timeout). <code>Promise.allSettled()</code> — ждёт все, даже если часть упала (нет прямого аналога в Swift).
+        </div>
+    </div>
+
+    <!-- ======================= SLIDE: First Component ======================= -->
+    <div class="slide slide-concept">
+        <h2>⚛️ Твой первый компонент: View vs Component</h2>
+
+        <p>В React Native компоненты — это <strong>функции, а не структуры или классы</strong>. Исторически React начинал с классовых компонентов (похожих на UIViewController), но с 2019 года индустрия полностью перешла на функциональные компоненты с хуками. Ты не встретишь классы в новом коде. Это как переход iOS-мира от UIKit к SwiftUI — но более радикальный, потому что в React старый и новый подход могут сосуществовать в одном проекте.</p>
+
+        <p>Что значит "рендеринг" компонента? Когда React вызывает функцию компонента, она возвращает JSX — описание того, как UI должен выглядеть <strong>прямо сейчас</strong>. React сравнивает это описание с предыдущим и обновляет реальные нативные View только там, где есть различия. Это аналог <code>body: some View</code> в SwiftUI — ты описываешь текущее состояние UI, а не последовательность мутаций.</p>
+
+        <p>Жизненный цикл компонента проще, чем у UIViewController. Функциональный компонент не имеет методов <code>viewDidLoad</code>, <code>viewWillAppear</code>, <code>viewDidDisappear</code> и т.д. Вместо этого есть один универсальный хук <code>useEffect</code>, который покрывает все эти случаи. Компонент "рождается" (mount), "обновляется" (re-render при изменении props или state), и "умирает" (unmount). Всё управление жизненным циклом — через useEffect с правильным dependency array.</p>
+
+        <p>Props (входные параметры) в React — это <strong>read-only</strong>. Компонент никогда не модифицирует свои props, как SwiftUI View не модифицирует let-свойства. Если дочернему компоненту нужно сообщить что-то родителю — передаётся callback-функция через props (аналог closure в Swift).</p>
+
+        <div class="code-compare">
+            <div class="code-box swift">
+                <div class="code-header swift">🍎 SwiftUI View</div>
+                <div class="code-content">struct TeamCard: View {
+    let team: Team
+    let onTap: () -> Void
+    
+    var body: some View {
+        VStack(alignment: .leading) {
+            Text(team.name)
+                .font(.headline)
+            Text(team.city)
+                .foregroundColor(.gray)
+        }
+        .padding()
+        .background(Color.white)
+        .cornerRadius(12)
+        .onTapGesture { onTap() }
+    }
+}</div>
+            </div>
+            <div class="code-box react">
+                <div class="code-header react">⚛️ React Native Component</div>
+                <div class="code-content">interface TeamCardProps {
+    team: Team;
+    onTap: () => void;
+}
+
+function TeamCard({ team, onTap }: TeamCardProps) {
+    return (
+        &lt;TouchableOpacity onPress={onTap}&gt;
+            &lt;View style={styles.card}&gt;
+                &lt;Text style={styles.title}&gt;
+                    {team.name}
+                &lt;/Text&gt;
+                &lt;Text style={styles.subtitle}&gt;
+                    {team.city}
+                &lt;/Text&gt;
+            &lt;/View&gt;
+        &lt;/TouchableOpacity&gt;
+    );
+}</div>
+            </div>
+        </div>
+        
+        <div class="key-insight">
+            <strong>body: some View</strong> → <strong>return JSX</strong>. Структура та же: входные данные (props) → UI. Но важное отличие: в SwiftUI <code>body</code> — это computed property, которая вызывается фреймворком только когда @State изменяется. В React функция компонента вызывается при <strong>любом</strong> изменении state или props, включая изменения в родительском компоненте. Поэтому оптимизация (React.memo, useMemo) так важна.
+        </div>
+
+        <div class="tip">
+            В Swift ты привык к строгой типизации props через struct. В React TypeScript выполняет ту же роль через <code>interface</code>. Определи <code>interface TeamCardProps { team: Team; onTap: () => void; }</code> и TypeScript будет проверять, что все обязательные props переданы. Опциональные props помечаются <code>?</code> — как Optional в Swift.
+        </div>
+
+        <div class="warning">
+            Компонент должен возвращать <strong>один корневой элемент</strong>. Если нужно вернуть несколько элементов рядом — оберни в <code>&lt;View&gt;</code> или используй <code>&lt;Fragment&gt;</code> (сокращённо <code>&lt;&gt;...&lt;/&gt;</code>). Fragment не создаёт реального View — это аналог <code>Group</code> в SwiftUI.
+        </div>
+    </div>
+
+    <!-- ======================= SLIDE: JSX Explained ======================= -->
+    <div class="slide slide-concept">
+        <h2>🏷️ JSX — это не HTML, это Swift DSL</h2>
+        <p>JSX выглядит как HTML, но это просто синтаксический сахар для вызовов функций.</p>
+
+        <p>Когда Babel/TypeScript компилирует JSX, каждый тег превращается в вызов <code>React.createElement(type, props, children)</code>. Это значит, что JSX — это <strong>JavaScript-выражения</strong>, а не шаблоны. Ты можешь сохранить JSX в переменную, вернуть из функции, положить в массив. Это как SwiftUI ViewBuilder — ты конструируешь дерево UI-элементов через обычный код.</p>
+
+        <p>Важное ограничение: внутри <code>{}</code> в JSX можно писать только <strong>выражения</strong> (expressions), но не <strong>инструкции</strong> (statements). Выражение возвращает значение: <code>2 + 2</code>, <code>isOk ? "yes" : "no"</code>, <code>array.map(fn)</code>. Инструкция — нет: <code>if/else</code>, <code>for</code>, <code>switch</code>. Поэтому для условного рендеринга используют тернарный оператор <code>? :</code> или логическое И <code>&&</code>, а для списков — <code>.map()</code> вместо <code>for</code>. В SwiftUI ты можешь использовать <code>if/else</code> внутри body благодаря @ViewBuilder — в JSX такой магии нет.</p>
+
+        <p>В React Native, в отличие от React для веба, ты не используешь HTML-теги (<code>&lt;div&gt;</code>, <code>&lt;span&gt;</code>). Вместо них — нативные компоненты: <code>&lt;View&gt;</code> (как UIView), <code>&lt;Text&gt;</code> (как UILabel), <code>&lt;Image&gt;</code> (как UIImageView), <code>&lt;ScrollView&gt;</code>, <code>&lt;TextInput&gt;</code>. Весь текст обязательно оборачивается в <code>&lt;Text&gt;</code> — нельзя просто написать строку внутри <code>&lt;View&gt;</code>.</p>
+        
+        <div class="code-block">// Это JSX:
+&lt;View style={styles.container}&gt;
+    &lt;Text&gt;Hello&lt;/Text&gt;
+&lt;/View&gt;
+
+// Компилируется в:
+React.createElement(View, { style: styles.container },
+    React.createElement(Text, null, "Hello")
+);
+
+// Аналог в Swift (если бы был такой DSL):
+View(style: .container) {
+    Text("Hello")
+}</div>
+        
+        <div class="warning">
+            В JSX: <code>{}</code> = "вставь JavaScript выражение". Но осторожно с <code>&&</code>: <code>{count && &lt;Text&gt;{count}&lt;/Text&gt;}</code> при <code>count = 0</code> отрендерит <strong>"0"</strong> на экране, а не ничего! Потому что <code>0</code> — falsy, но React рендерит числа. Используй явное сравнение: <code>{count > 0 && ...}</code>. Это одна из самых частых ошибок, которую ловят на code review.
+        </div>
+
+        <div class="code-block">// Условный рендеринг
+{isLoading && &lt;ActivityIndicator /&gt;}
+{error ? &lt;ErrorView /&gt; : &lt;Content /&gt;}
+
+// Маппинг списка
+{teams.map(team => &lt;TeamCard key={team.id} team={team} /&gt;)}</div>
+
+        <p>Атрибут <code>key</code> при рендеринге списков — обязательный. Это подсказка React для алгоритма reconciliation: по key он понимает, какой элемент переместился, добавился или удалился. Без key (или с index в качестве key) React будет пересоздавать DOM-элементы при любом изменении порядка, что убивает производительность и вызывает баги с состоянием.</p>
+
+        <div class="tip">
+            Стили в React Native — это не CSS, а JavaScript-объекты. Вместо <code>.cornerRadius(12)</code> пишешь <code>borderRadius: 12</code>. Вместо <code>.foregroundColor(.gray)</code> — <code>color: 'gray'</code>. Используй <code>StyleSheet.create({})</code> для оптимизации — React Native валидирует стили один раз при создании, а не при каждом рендере.
+        </div>
+    </div>
+
+    <!-- ======================= SLIDE: useState ======================= -->
+    <div class="slide slide-concept">
+        <h2>🔄 useState = @State</h2>
+
+        <p>useState — это самый базовый хук React. Он делает то же, что <code>@State</code> в SwiftUI: хранит значение между рендерами и вызывает перерисовку при изменении. Но механика отличается. В SwiftUI <code>@State</code> — это property wrapper, который хранит данные вне struct (во внутреннем хранилище фреймворка) и автоматически трекает изменения через willSet. В React <code>useState</code> — это функция, которая регистрирует "слот" состояния в связанном списке хуков компонента.</p>
+
+        <p>Критически важный нюанс: <strong>замыкания захватывают стейт на момент рендера</strong>. Если ты вызвал <code>setCount(count + 1)</code> три раза подряд в одном обработчике, ты получишь +1, а не +3, потому что <code>count</code> в каждом вызове — это одно и то же значение из текущего рендера. Решение — <strong>функциональное обновление</strong>: <code>setCount(prev => prev + 1)</code>. Тогда React гарантированно использует актуальное значение.</p>
+
+        <p>React <strong>батчит</strong> обновления состояния. Если ты вызываешь <code>setCount(1); setName("Oleh"); setLoading(false);</code> — будет один ре-рендер, а не три. С React 18+ батчинг работает везде: в обработчиках событий, в setTimeout, в промисах. Это как SwiftUI, который тоже объединяет изменения @State в один цикл обновления UI.</p>
+
+        <div class="code-compare">
+            <div class="code-box swift">
+                <div class="code-header swift">🍎 SwiftUI @State</div>
+                <div class="code-content">struct Counter: View {
+    @State private var count = 0
+    
+    var body: some View {
+        VStack {
+            Text("Count: \(count)")
+            
+            Button("Increment") {
+                count += 1  // автоматический re-render
+            }
+        }
+    }
+}</div>
+            </div>
+            <div class="code-box react">
+                <div class="code-header react">⚛️ React useState</div>
+                <div class="code-content">function Counter() {
+    const [count, setCount] = useState(0);
+    
+    return (
+        &lt;View&gt;
+            &lt;Text&gt;Count: {count}&lt;/Text&gt;
+            
+            &lt;Button 
+                title="Increment"
+                onPress={() => setCount(count + 1)}
+            /&gt;
+        &lt;/View&gt;
+    );
+}</div>
+            </div>
+        </div>
+        
+        <div class="key-insight">
+            <code>useState</code> возвращает <strong>[текущее значение, функция-сеттер]</strong>. Это деструктуризация массива — имена ты выбираешь сам. Конвенция: <code>[thing, setThing]</code>. Аргумент useState — начальное значение. Можно передать функцию: <code>useState(() => expensiveComputation())</code> — она вызовется только при первом рендере (lazy initialization). Полезно если начальное значение дорого вычислять.
+        </div>
+
+        <div class="warning">
+            Нельзя напрямую менять <code>count = 5</code>. ТОЛЬКО через <code>setCount(5)</code>. Иначе React не узнает об изменении и UI не обновится. В Swift с @State ты пишешь <code>count = 5</code> и property wrapper вызывает willSet → перерисовку. В React такой магии нет — setter-функция явная.
+        </div>
+
+        <div class="warning">
+            Ловушка "stale closure": если у тебя setTimeout или interval, внутри callback <code>count</code> будет значением <strong>на момент создания замыкания</strong>, а не текущим. Используй <code>setCount(prev => prev + 1)</code> вместо <code>setCount(count + 1)</code> в любых callback-ах, которые могут вызваться позже. Это не проблема для простых onClick, но критично для таймеров и подписок.
+        </div>
+    </div>
+
+    <!-- ======================= SLIDE: useState Objects ======================= -->
+    <div class="slide slide-concept">
+        <h2>🔄 useState с объектами — immutability!</h2>
+
+        <p>Это, пожалуй, самый контринтуитивный момент для Swift-разработчика. В Swift struct — это value type: когда ты пишешь <code>filter.country = "Spain"</code>, ты создаёшь новую копию struct, и @State автоматически замечает изменение. В JavaScript <strong>объекты — это reference types</strong> (как class в Swift). Если ты мутируешь объект напрямую (<code>filter.country = "Spain"</code>), ссылка на объект не меняется, и React <strong>не видит изменения</strong> — UI не обновится.</p>
+
+        <p>Поэтому в React принят паттерн <strong>иммутабельных обновлений</strong>: создаёшь новый объект с нужными изменениями через spread-оператор <code>{ ...old, changed: newValue }</code>. Это создаёт новую ссылку, React сравнивает ссылки (===) и понимает: "объект изменился, нужен ре-рендер". По сути, ты вручную делаешь то, что Swift struct делает автоматически — copy-on-write.</p>
+
+        <p>Для вложенных объектов это становится verbose: <code>setUser({ ...user, address: { ...user.address, city: "Valencia" } })</code>. Для сложных случаев используют библиотеку <strong>Immer</strong> (через <code>useImmer</code> хук), которая позволяет писать мутабельный код, а под капотом создаёт иммутабельные обновления. Также <code>useReducer</code> (аналог Redux reducer) часто удобнее для объектов с множеством полей.</p>
+
+        <div class="code-compare">
+            <div class="code-box swift">
+                <div class="code-header swift">🍎 SwiftUI (struct = value type)</div>
+                <div class="code-content">struct TeamListView: View {
+    @State private var filter = Filter(
+        country: nil,
+        minPlayers: 0
+    )
+    
+    var body: some View {
+        // Можно напрямую менять
+        Button("Set Spain") {
+            filter.country = "Spain"
+        }
+    }
+}</div>
+            </div>
+            <div class="code-box react">
+                <div class="code-header react">⚛️ React (объекты мутабельны!)</div>
+                <div class="code-content">function TeamListView() {
+    const [filter, setFilter] = useState({
+        country: null,
+        minPlayers: 0
+    });
+    
+    // ❌ НЕПРАВИЛЬНО (мутация!)
+    // filter.country = "Spain"; 
+    
+    // ✅ ПРАВИЛЬНО (новый объект)
+    const handleSetSpain = () => {
+        setFilter({ ...filter, country: "Spain" });
+    };
+}</div>
+            </div>
+        </div>
+        
+        <div class="warning">
+            <code>...filter</code> — spread operator. Копирует все поля объекта в новый объект. Всегда создавай НОВЫЙ объект! Но помни: spread делает только <strong>shallow copy</strong> (поверхностную копию). Вложенные объекты копируются по ссылке. Это как <code>NSMutableDictionary copy</code> в Objective-C — верхний уровень копируется, внутренние — нет.
+        </div>
+
+        <div class="tip">
+            Для массивов тот же принцип. Не используй <code>push()</code>, <code>splice()</code> — они мутируют массив. Используй иммутабельные операции: <code>[...arr, newItem]</code> (добавить), <code>arr.filter(x => x.id !== id)</code> (удалить), <code>arr.map(x => x.id === id ? { ...x, name: "new" } : x)</code> (обновить элемент). В Swift с value types ты не думаешь об этом — компилятор сам создаёт копии. В React ты должен делать это явно.
+        </div>
+
+        <div class="key-insight">
+            Правило: если вызываешь setState — передавай <strong>новую ссылку</strong>. Для примитивов (number, string, boolean) это происходит автоматически. Для объектов и массивов — используй spread или immutable-методы. Это фундаментальный контракт React: <code>Object.is(oldState, newState) === true</code> → skip render, <code>=== false</code> → re-render.
+        </div>
+    </div>
+
+    <!-- ======================= SLIDE: EXERCISE 1 ======================= -->
+    <div class="slide slide-exercise">
+        <h2>✏️ Упражнение 1: Счётчик команд</h2>
+        
+        <div class="exercise-box">
+            <h3>Задание</h3>
+            <p>Создай компонент <code>TeamCounter</code> который:</p>
+            <ol>
+                <li>Показывает текущее число команд (начальное: 0)</li>
+                <li>Имеет кнопку "Добавить команду" (+1)</li>
+                <li>Имеет кнопку "Удалить команду" (-1, но не меньше 0)</li>
+                <li>Показывает "Нет команд" когда счётчик = 0</li>
+            </ol>
+            
+            <p style="margin-top: 15px;"><strong>Используй:</strong> useState, условный рендеринг</p>
+            
+            <button class="solution-toggle" onclick="toggleSolution(this)">Показать решение</button>
+            
+            <div class="solution-content">
+                <div class="code-block">import { useState } from 'react';
+import { View, Text, Button, StyleSheet } from 'react-native';
+
+function TeamCounter() {
+    const [count, setCount] = useState(0);
+    
+    const increment = () => setCount(count + 1);
+    const decrement = () => setCount(Math.max(0, count - 1));
+    
+    return (
+        &lt;View style={styles.container}&gt;
+            {count === 0 ? (
+                &lt;Text style={styles.empty}&gt;Нет команд&lt;/Text&gt;
+            ) : (
+                &lt;Text style={styles.count}&gt;Команд: {count}&lt;/Text&gt;
+            )}
+            
+            &lt;View style={styles.buttons}&gt;
+                &lt;Button title="Добавить" onPress={increment} /&gt;
+                &lt;Button title="Удалить" onPress={decrement} /&gt;
+            &lt;/View&gt;
+        &lt;/View&gt;
+    );
+}
+
+const styles = StyleSheet.create({
+    container: { padding: 20, alignItems: 'center' },
+    count: { fontSize: 24, marginBottom: 20 },
+    empty: { fontSize: 24, color: 'gray', marginBottom: 20 },
+    buttons: { flexDirection: 'row', gap: 10 }
+});</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======================= SLIDE: useEffect ======================= -->
+    <div class="slide slide-concept">
+        <h2>⚡ useEffect = onAppear + Combine</h2>
+
+        <p>useEffect — самый мощный и одновременно самый сложный хук. Правильная ментальная модель: useEffect — это механизм <strong>синхронизации</strong> компонента с внешним миром, а не "lifecycle callback". Ты говоришь React: "после каждого рендера, если эти зависимости изменились, выполни этот код". Этот сдвиг в мышлении (от lifecycle к синхронизации) — ключевой для понимания React.</p>
+
+        <p>В SwiftUI ты привык думать категориями: <code>onAppear</code> (появился на экране), <code>onDisappear</code> (ушёл с экрана), <code>.onChange(of:)</code> (значение изменилось). В React <code>useEffect</code> покрывает <strong>все три случая</strong> в зависимости от dependency array. Пустой массив <code>[]</code> = mount/unmount (как onAppear + onDisappear). Массив с зависимостями <code>[value]</code> = onChange(of: value). Без массива = каждый рендер (почти никогда не нужно).</p>
+
+        <p>Частая ошибка — использовать useEffect для вещей, которым он не нужен. Если ты вычисляешь derived state (filteredList из list + searchQuery), <strong>не используй useEffect</strong> — используй useMemo или просто вычисляй в теле компонента. useEffect нужен для <strong>side effects</strong>: сетевые запросы, подписки, таймеры, логирование, DOM-манипуляции. Если код не взаимодействует с чем-то вне React — скорее всего, useEffect не нужен.</p>
+
+        <p>Race condition — классическая проблема с fetch в useEffect. Если пользователь быстро меняет фильтр, предыдущий запрос может вернуться после нового. Решение: cleanup-функция с флагом <code>let ignore = false; return () => { ignore = true; }</code> или AbortController для отмены fetch. В Swift ты решал это через Task.cancel() или Combine cancellable.</p>
+
+        <div class="code-compare">
+            <div class="code-box swift">
+                <div class="code-header swift">🍎 SwiftUI lifecycle</div>
+                <div class="code-content">struct TeamListView: View {
+    @State private var teams: [Team] = []
+    
+    var body: some View {
+        List(teams) { team in
+            TeamRow(team: team)
+        }
+        .onAppear {
+            // Загрузка при появлении
+            Task { await loadTeams() }
+        }
+        .onDisappear {
+            // Cleanup
+            cancelSubscriptions()
+        }
+    }
+}</div>
+            </div>
+            <div class="code-box react">
+                <div class="code-header react">⚛️ React useEffect</div>
+                <div class="code-content">function TeamListView() {
+    const [teams, setTeams] = useState([]);
+    
+    useEffect(() => {
+        // Выполняется после рендера (как onAppear)
+        loadTeams().then(setTeams);
+        
+        // Cleanup функция (как onDisappear)
+        return () => {
+            cancelSubscriptions();
+        };
+    }, []); // [] = только при mount
+    
+    return (
+        &lt;FlatList data={teams} ... /&gt;
+    );
+}</div>
+            </div>
+        </div>
+        
+        <div class="key-insight">
+            Второй аргумент <code>[]</code> — dependency array. Пустой = только при mount/unmount. С зависимостями — при каждом изменении этих зависимостей. Без массива вообще — при каждом рендере. Забыть dependency array — частая ошибка, которая вызывает бесконечные циклы запросов.
+        </div>
+
+        <div class="warning">
+            useEffect выполняется <strong>после</strong> рендера (не до, не во время). Это значит, что пользователь сначала увидит UI без данных, потом данные загрузятся и произойдёт повторный рендер. Это нормально — используй loading-состояние. В SwiftUI <code>onAppear</code> тоже вызывается после первого рендера, поведение идентично.
+        </div>
+
+        <div class="tip">
+            В SwiftUI ты привык к <code>.task { await loadData() }</code> — async-контексту привязанному к lifecycle View. В React useEffect не может быть async-функцией напрямую. Паттерн: <code>useEffect(() => { async function load() { ... } load(); }, [])</code> или <code>useEffect(() => { loadData().then(setData); }, [])</code>.
+        </div>
+    </div>
+
+    <!-- ======================= SLIDE: useEffect Dependencies ======================= -->
+    <div class="slide slide-concept">
+        <h2>📦 Dependency Array — самое важное</h2>
+
+        <p>Dependency array — это механизм, через который ты говоришь React: "перезапусти этот эффект, только если эти значения изменились". React сравнивает каждый элемент массива с его предыдущим значением через <code>Object.is()</code> (по сути <code>===</code>). Для примитивов (числа, строки, boolean) это работает интуитивно: <code>Object.is(5, 5) === true</code>. Но для объектов и массивов — сравнивается <strong>ссылка</strong>, а не содержимое.</p>
+
+        <p>Это источник самой распространённой ошибки с useEffect: <strong>бесконечный цикл</strong>. Если ты создаёшь объект или массив в теле компонента и передаёшь в dependency array, при каждом рендере создаётся новая ссылка → React считает что зависимость изменилась → запускает эффект → эффект вызывает setState → новый рендер → новая ссылка → снова эффект → бесконечный цикл. В Swift с value types (struct) такой проблемы нет, потому что Equatable сравнивает содержимое.</p>
+
+        <p>Практическое правило: в dependency array кладут только <strong>примитивы</strong>, стабильные ссылки (из useState, useRef) и мемоизированные значения (из useMemo, useCallback). Если нужно зависеть от свойства объекта — передавай само свойство: <code>[filter.country]</code> вместо <code>[filter]</code>.</p>
+
+        <div class="code-block">// 1. Пустой массив = только при mount (как viewDidLoad / onAppear)
+useEffect(() => {
+    fetchInitialData();
+}, []);
+
+// 2. С зависимостями = при изменении зависимостей (как Combine .sink)
+useEffect(() => {
+    fetchTeams(filter.country);  // перезагрузка при смене страны
+}, [filter.country]);
+
+// 3. Без массива = КАЖДЫЙ рендер (почти никогда не нужно!)
+useEffect(() => {
+    console.log('Каждый рендер');  // ❌ Обычно ошибка
+});</div>
+        
+        <div class="tip">
+            Думай о dependency array как о <code>.onChange(of:)</code> в SwiftUI. Но с ключевым отличием: в SwiftUI onChange срабатывает только при фактическом изменении значения (Equatable comparison). В React — при изменении ссылки (Object.is). Для примитивов разницы нет, но для объектов и массивов — огромная.
+        </div>
+
+        <div class="warning">
+            Забыл зависимость? ESLint правило <code>react-hooks/exhaustive-deps</code> подскажет. <strong>Никогда не подавляй это правило</strong> через <code>// eslint-disable</code> без глубокого понимания последствий. Если ESLint просит добавить зависимость, а ты не хочешь — проблема в дизайне эффекта, а не в правиле. Обычно решение: useMemo/useCallback для стабилизации ссылки, или разделение эффекта на несколько меньших.
+        </div>
+
+        <div class="warning">
+            Функции, объявленные в теле компонента, создаются заново при каждом рендере. Если ты добавишь такую функцию в dependency array — получишь бесконечный цикл. Решение: либо переместить функцию внутрь useEffect, либо обернуть в useCallback, либо вынести за пределы компонента (если функция не зависит от props/state).
+        </div>
+    </div>
+
+    <!-- ======================= SLIDE: useEffect Cleanup ======================= -->
+    <div class="slide slide-concept">
+        <h2>🧹 Cleanup в useEffect</h2>
+
+        <p>Cleanup-функция в useEffect — это аналог <code>deinit</code> и <code>cancellable.cancel()</code> из Swift. Но она вызывается не только при unmount компонента, а ещё и <strong>перед каждым повторным запуском эффекта</strong>. Это критически важно для предотвращения утечек памяти и race conditions.</p>
+
+        <p>Когда cleanup вызывается? Два случая: (1) компонент удаляется из дерева (unmount) — как deinit; (2) зависимости эффекта изменились и эффект перезапускается — сначала вызывается cleanup предыдущего эффекта, потом новый эффект. Второй случай часто забывают, но он критичен. Представь: ты подписываешься на WebSocket для чата комнаты X. Пользователь переключился на комнату Y. Без cleanup ты останешься подписан на обе комнаты.</p>
+
+        <p>Типичные паттерны cleanup: (1) <code>clearInterval(id)</code> / <code>clearTimeout(id)</code> — для таймеров, иначе они продолжают работать после unmount; (2) <code>subscription.unsubscribe()</code> — для EventEmitter, WebSocket, Firebase listeners; (3) <code>controller.abort()</code> — для AbortController, отменяющего fetch-запросы; (4) <code>ignore = true</code> — флаг для игнорирования результатов устаревших промисов.</p>
+
+        <p>В Swift ты привык, что ARC и deinit автоматически чистят ресурсы. В React нет автоматического управления подписками — если забыл cleanup, подписка живёт вечно (memory leak). React Strict Mode в development-режиме вызывает эффект дважды (mount → unmount → mount), чтобы помочь найти отсутствующий cleanup.</p>
+
+        <div class="code-compare">
+            <div class="code-box swift">
+                <div class="code-header swift">🍎 Swift Combine</div>
+                <div class="code-content">class TeamViewModel: ObservableObject {
+    private var cancellables = Set&lt;AnyCancellable&gt;()
+    
+    func subscribe() {
+        locationService.updates
+            .sink { [weak self] location in
+                self?.updateLocation(location)
+            }
+            .store(in: &cancellables)
+    }
+    
+    deinit {
+        cancellables.forEach { $0.cancel() }
+    }
+}</div>
+            </div>
+            <div class="code-box react">
+                <div class="code-header react">⚛️ React useEffect cleanup</div>
+                <div class="code-content">function LiveLocationView() {
+    useEffect(() => {
+        // Subscribe
+        const subscription = locationService.subscribe(
+            location => updateLocation(location)
+        );
+        
+        // Cleanup (как deinit)
+        return () => {
+            subscription.unsubscribe();
+        };
+    }, []);
+}</div>
+            </div>
+        </div>
+        
+        <div class="key-insight">
+            Return функция в useEffect = cleanup. Вызывается при unmount ИЛИ перед следующим запуском эффекта (если зависимости изменились). Это гарантирует, что предыдущая подписка/таймер будут очищены перед созданием новых. В Swift Combine ты хранил cancellables в Set — здесь cleanup выполняет ту же роль.
+        </div>
+
+        <div class="warning">
+            Если ты используешь <code>setInterval</code> внутри useEffect с пустым dependency array, переменные внутри callback будут "заморожены" на значениях первого рендера (stale closure). Таймер будет вечно видеть <code>count = 0</code>. Решение: <code>setCount(prev => prev + 1)</code> (функциональное обновление) или <code>useRef</code> для хранения актуального значения.
+        </div>
+
+        <div class="tip">
+            Паттерн для safe async в useEffect: <code>useEffect(() => { let cancelled = false; fetchData().then(data => { if (!cancelled) setData(data); }); return () => { cancelled = true; }; }, [id])</code>. Это предотвращает обновление state unmounted компонента — частая причина warning "Can't perform a React state update on an unmounted component".
+        </div>
+    </div>
+
+    <!-- ======================= SLIDE: EXERCISE 2 ======================= -->
+    <div class="slide slide-exercise">
+        <h2>✏️ Упражнение 2: Загрузка команд</h2>
+        
+        <div class="exercise-box">
+            <h3>Задание</h3>
+            <p>Создай компонент <code>TeamList</code> который:</p>
+            <ol>
+                <li>При mount загружает список команд (используй mock данные)</li>
+                <li>Показывает <code>ActivityIndicator</code> пока загружается</li>
+                <li>Показывает ошибку если fetch упал</li>
+                <li>Рендерит список команд после загрузки</li>
+            </ol>
+            
+            <p><strong>Mock API:</strong></p>
+            <div class="code-block" style="font-size: 0.8em;">const fetchTeams = () => new Promise((resolve) => {
+    setTimeout(() => {
+        resolve([
+            { id: '1', name: 'Real Madrid', country: 'Spain' },
+            { id: '2', name: 'Barcelona', country: 'Spain' },
+            { id: '3', name: 'Manchester United', country: 'England' },
+        ]);
+    }, 1500);
+});</div>
+            
+            <button class="solution-toggle" onclick="toggleSolution(this)">Показать решение</button>
+            
+            <div class="solution-content">
+                <div class="code-block">function TeamList() {
+    const [teams, setTeams] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+    
+    useEffect(() => {
+        fetchTeams()
+            .then(data => {
+                setTeams(data);
+                setLoading(false);
+            })
+            .catch(err => {
+                setError(err.message);
+                setLoading(false);
+            });
+    }, []);  // [] = только при mount
+    
+    if (loading) {
+        return &lt;ActivityIndicator size="large" /&gt;;
+    }
+    
+    if (error) {
+        return &lt;Text style={styles.error}&gt;{error}&lt;/Text&gt;;
+    }
+    
+    return (
+        &lt;FlatList
+            data={teams}
+            keyExtractor={item => item.id}
+            renderItem={({ item }) => (
+                &lt;View style={styles.row}&gt;
+                    &lt;Text&gt;{item.name}&lt;/Text&gt;
+                    &lt;Text style={styles.country}&gt;{item.country}&lt;/Text&gt;
+                &lt;/View&gt;
+            )}
+        /&gt;
+    );
+}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======================= SLIDE: FlatList ======================= -->
+    <div class="slide slide-concept">
+        <h2>📋 FlatList = UITableView</h2>
+
+        <p>FlatList — это аналог UITableView, но с <strong>принципиально другим подходом к виртуализации</strong>. UITableView использует пул ячеек (cell reuse): создаёт ~15 ячеек и переиспользует их при скролле через <code>dequeueReusableCell</code>. FlatList использует <strong>виртуализацию</strong>: рендерит только видимые элементы плюс буфер (windowSize), а остальные удаляет из памяти полностью. При скролле React создаёт новые компоненты и уничтожает невидимые.</p>
+
+        <p>Это важное отличие с точки зрения производительности. В UIKit cell reuse сохраняет UIView объекты в памяти — ты только обновляешь содержимое. В React Native виртуализация пересоздаёт компоненты — это дороже, поэтому оптимизация (React.memo, getItemLayout, windowSize) критически важна для больших списков. Без оптимизации список из 1000 элементов может заметно подтормаживать.</p>
+
+        <p>Для группированных данных (как UITableView с секциями) используй <code>SectionList</code> — он принимает массив секций с заголовками. Для горизонтальных списков — <code>FlatList</code> с пропсом <code>horizontal={true}</code>. Для сеток — <code>FlatList</code> с <code>numColumns={2}</code>. Один компонент покрывает UITableView, UICollectionView с FlowLayout, и горизонтальный UIScrollView.</p>
+
+        <div class="code-compare">
+            <div class="code-box swift">
+                <div class="code-header swift">🍎 UIKit UITableView</div>
+                <div class="code-content">class TeamsVC: UITableViewController {
+    var teams: [Team] = []
+    
+    override func tableView(
+        _ tv: UITableView,
+        numberOfRowsInSection section: Int
+    ) -> Int {
+        return teams.count
+    }
+    
+    override func tableView(
+        _ tv: UITableView,
+        cellForRowAt indexPath: IndexPath
+    ) -> UITableViewCell {
+        let cell = tv.dequeueReusableCell(...)
+        let team = teams[indexPath.row]
+        cell.textLabel?.text = team.name
+        return cell
+    }
+}</div>
+            </div>
+            <div class="code-box react">
+                <div class="code-header react">⚛️ React Native FlatList</div>
+                <div class="code-content">function TeamsScreen() {
+    const [teams, setTeams] = useState([]);
+    
+    return (
+        &lt;FlatList
+            data={teams}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
+                &lt;TeamRow team={item} /&gt;
+            )}
+            // Опционально: pull-to-refresh
+            refreshing={refreshing}
+            onRefresh={handleRefresh}
+        /&gt;
+    );
+}</div>
+            </div>
+        </div>
+        
+        <div class="tip">
+            <code>keyExtractor</code> — как <code>Identifiable</code> protocol. React использует key для оптимизации diffing. Ключ должен быть уникальным и стабильным (не меняться между рендерами). Используй <code>item.id</code>, а не <code>index</code>. Если нет уникального ID — сгенерируй его при получении данных. В SwiftUI <code>ForEach(items, id: \.id)</code> делает то же самое.
+        </div>
+
+        <div class="warning">
+            В отличие от UITableView, FlatList <strong>не поддерживает редактирование</strong> (swipe-to-delete, reorder) из коробки. Для этого используют библиотеки: <code>react-native-gesture-handler</code> + <code>react-native-reanimated</code> для свайпов, или готовые решения вроде <code>react-native-swipeable-item</code>. Это одна из областей, где нативный iOS UX богаче React Native.
+        </div>
+
+        <div class="tip">
+            <code>renderItem</code> получает объект <code>{ item, index, separators }</code>. Деструктуризуешь: <code>renderItem={({ item }) => ...}</code>. Если нужен разделитель между элементами — используй <code>ItemSeparatorComponent</code>. Header и Footer списка — через <code>ListHeaderComponent</code> и <code>ListFooterComponent</code> (удобно для показа loader при загрузке следующей страницы).
+        </div>
+    </div>
+
+    <!-- ======================= SLIDE: FlatList Optimization ======================= -->
+    <div class="slide slide-concept">
+        <h2>⚡ FlatList Performance Tips</h2>
+
+        <p>Производительность FlatList — одна из главных тем в React Native. В UIKit ты получаешь 60fps "бесплатно" благодаря нативному cell reuse. В React Native каждый scroll-кадр может вызвать JavaScript → Native мост (bridge), что создаёт задержки. Новая архитектура (Fabric + JSI) значительно улучшает это, но оптимизация остаётся важной.</p>
+
+        <p>Каждый проп ниже решает конкретную проблему. <code>getItemLayout</code> убирает необходимость React Native измерять высоту каждого элемента при скролле — без него при быстром скролле видны пустые области (как при неправильном estimatedRowHeight в UITableView). <code>windowSize</code> контролирует количество элементов в памяти — меньше значение = меньше памяти, но больше шанс увидеть blank areas. <code>maxToRenderPerBatch</code> ограничивает количество элементов, рендерящихся за один JS-цикл — меньше = плавнее скролл, но медленнее заполнение.</p>
+
+        <p>Для реально больших списков (1000+ элементов) рассмотри <code>@shopify/flash-list</code> — drop-in замена FlatList, которая использует cell recycling (как UITableView!) вместо виртуализации. Benchmarks показывают 5-10x улучшение производительности. Shopify разработали его специально потому что стандартный FlatList не справлялся с их каталогами.</p>
+
+        <div class="code-block">&lt;FlatList
+    data={teams}
+    keyExtractor={(item) => item.id}  // ✅ Уникальный ID, не index!
+    renderItem={renderTeam}            // ✅ Вынеси функцию наружу
+    
+    // Для фиксированной высоты (как estimatedRowHeight)
+    getItemLayout={(data, index) => ({
+        length: ITEM_HEIGHT,
+        offset: ITEM_HEIGHT * index,
+        index
+    })}
+    
+    // Виртуализация (сколько экранов рендерить)
+    windowSize={10}
+    
+    // Начальное количество
+    initialNumToRender={10}
+    
+    // Максимум элементов в памяти
+    maxToRenderPerBatch={10}
+/&gt;</div>
+        
+        <div class="warning">
+            НИКОГДА не используй index как key! <code>keyExtractor={(item, index) => index}</code> — это баг. Когда элемент удаляется или добавляется в середину списка, индексы сдвигаются, и React думает что ВСЕ элементы после изменения обновились. Результат: неправильный state в дочерних компонентах, мерцание, потеря введённых данных. В UIKit это как если бы dequeueReusableCell возвращал ячейку с данными другого элемента.
+        </div>
+
+        <div class="tip">
+            <code>getItemLayout</code> — как задать <code>rowHeight</code> вместо <code>estimatedRowHeight</code> в UITableView. Без него FlatList должен рендерить каждый элемент чтобы узнать его высоту, что убивает производительность при <code>scrollToIndex</code> и <code>initialScrollIndex</code>. Используй только если все элементы одной высоты. Для динамической высоты — рассмотри <code>@shopify/flash-list</code> с <code>estimatedItemSize</code>.
+        </div>
+
+        <div class="key-insight">
+            Вынеси <code>renderItem</code> в отдельную функцию вне компонента или мемоизируй через useCallback. Если определить renderItem inline (<code>renderItem={({ item }) => ...}</code>), при каждом рендере создаётся новая функция → FlatList считает что все элементы обновились. Это как если бы UITableView вызывал cellForRowAt для всех видимых ячеек при каждом скролле.
+        </div>
+    </div>
+
+    <!-- ======================= SLIDE: useCallback ======================= -->
+    <div class="slide slide-concept">
+        <h2>🎯 useCallback — мемоизация функций</h2>
+
+        <p>В Swift функции и замыкания — это reference types, но при передаче в SwiftUI View они не вызывают перерисовку (SwiftUI сравнивает по данным, не по замыканиям). В React всё наоборот: <strong>каждый рендер создаёт новые экземпляры всех функций</strong> в теле компонента. Это значит, что если ты передаёшь функцию как prop дочернему компоненту, обёрнутому в React.memo, memo считает что prop изменился (новая ссылка на функцию) — и дочерний компонент перерендеривается без необходимости.</p>
+
+        <p><code>useCallback</code> решает эту проблему: он возвращает ту же ссылку на функцию между рендерами, пока зависимости не изменились. По сути, это <code>useMemo</code> для функций: <code>useCallback(fn, deps)</code> === <code>useMemo(() => fn, deps)</code>. Но <strong>useCallback полезен ТОЛЬКО если</strong> дочерний компонент обёрнут в React.memo или функция используется в dependency array другого хука.</p>
+
+        <p>Частая ошибка — оборачивать в useCallback <strong>всё подряд</strong> "на всякий случай". У useCallback есть overhead: React хранит функцию и dependency array в памяти, сравнивает зависимости при каждом рендере. Если дочерний компонент не обёрнут в React.memo, useCallback бесполезен — компонент всё равно перерендерится из-за изменения любого другого пропса или потому что родитель перерендерился.</p>
+
+        <div class="code-compare">
+            <div class="code-box swift">
+                <div class="code-header swift">🍎 Swift (нет прямого аналога)</div>
+                <div class="code-content">// В Swift замыкания не пересоздаются
+// при каждом render, но в React — да!
+
+struct TeamList: View {
+    var onSelect: (Team) -> Void
+    
+    var body: some View {
+        List(teams) { team in
+            TeamRow(team: team,
+                onTap: { onSelect(team) })
+        }
+    }
+}</div>
+            </div>
+            <div class="code-box react">
+                <div class="code-header react">⚛️ React useCallback</div>
+                <div class="code-content">function TeamList({ onSelect }) {
+    // ❌ Без useCallback — новая функция каждый рендер
+    // const handleSelect = (team) => onSelect(team);
+    
+    // ✅ С useCallback — та же функция
+    const handleSelect = useCallback((team) => {
+        onSelect(team);
+    }, [onSelect]);
+    
+    return (
+        &lt;FlatList
+            data={teams}
+            renderItem={({ item }) => (
+                &lt;TeamRow team={item} onTap={handleSelect} /&gt;
+            )}
+        /&gt;
+    );
+}</div>
+            </div>
+        </div>
+        
+        <div class="key-insight">
+            useCallback нужен в двух случаях: (1) когда передаёшь функцию в дочерний компонент, обёрнутый в <code>React.memo</code>; (2) когда функция используется в dependency array <code>useEffect</code> или другого хука. В остальных случаях — не нужен. Правило: "не оптимизируй пока не измеришь". React DevTools Profiler покажет, какие компоненты рендерятся зря.
+        </div>
+
+        <div class="warning">
+            Если забыл зависимость в useCallback — функция захватит stale state (устаревшие значения). Это та же проблема "stale closure", что и с useState. ESLint правило <code>exhaustive-deps</code> поможет, но понимание механизма замыканий критично. В Swift с @escaping closure ты хранил <code>[weak self]</code> — в React вместо этого правильно перечисляешь зависимости.
+        </div>
+
+        <div class="tip">
+            В React 19+ появился <strong>React Compiler</strong>, который автоматически добавляет мемоизацию. Если твой проект уже на React 19, возможно useCallback и useMemo больше не нужны вручную — компилятор делает это за тебя. Но понимание механизма всё равно важно для отладки.
+        </div>
+    </div>
+
+    <!-- ======================= SLIDE: useMemo ======================= -->
+    <div class="slide slide-concept">
+        <h2>💾 useMemo — мемоизация вычислений</h2>
+
+        <p>useMemo — это кеширование результата вычисления между рендерами. Ближайший аналог в Swift — <code>lazy var</code> + manual invalidation: значение вычисляется один раз и кешируется, пока зависимости не изменятся. В отличие от computed property в Swift, которая пересчитывается при каждом обращении, useMemo пересчитывает только при изменении зависимостей.</p>
+
+        <p>Когда использовать useMemo? Два основных случая: (1) <strong>дорогие вычисления</strong> — фильтрация/сортировка большого массива, сложные математические операции; (2) <strong>стабилизация ссылки</strong> — когда результат (объект/массив) передаётся в dependency array другого хука или в React.memo компонент. Без useMemo новый массив (даже с теми же элементами) создаётся при каждом рендере.</p>
+
+        <p>Когда НЕ использовать: для простых вычислений (конкатенация строк, простая арифметика). useMemo сам имеет overhead — React хранит предыдущий результат и dependency array, сравнивает зависимости. Для простых операций этот overhead может быть дороже, чем пересчёт. Правило: если вычисление занимает меньше 1ms — useMemo не нужен.</p>
+
+        <p>Важно: React <strong>не гарантирует</strong> что useMemo сохранит кеш вечно. В будущем React может сбрасывать кеш для экономии памяти. Поэтому код должен работать корректно и без useMemo — это оптимизация, не гарантия поведения.</p>
+
+        <div class="code-compare">
+            <div class="code-box swift">
+                <div class="code-header swift">🍎 Swift computed с cache</div>
+                <div class="code-content">struct TeamListView: View {
+    let teams: [Team]
+    let filter: String
+    
+    // Пересчитывается при каждом render
+    var filteredTeams: [Team] {
+        teams.filter { $0.country == filter }
+            .sorted { $0.name < $1.name }
+    }
+}</div>
+            </div>
+            <div class="code-box react">
+                <div class="code-header react">⚛️ React useMemo</div>
+                <div class="code-content">function TeamListView({ teams, filter }) {
+    // Пересчитается ТОЛЬКО при изменении
+    // teams или filter
+    const filteredTeams = useMemo(() => {
+        return teams
+            .filter(t => t.country === filter)
+            .sort((a, b) => a.name.localeCompare(b.name));
+    }, [teams, filter]);
+    
+    return &lt;FlatList data={filteredTeams} ... /&gt;;
+}</div>
+            </div>
+        </div>
+        
+        <div class="warning">
+            Не злоупотребляй! useMemo имеет overhead: хранит предыдущее значение + dependency array + сравнивает зависимости при каждом рендере. Используй для: фильтрации/сортировки массивов 100+ элементов, сложных трансформаций данных, создания объектов, передаваемых в useEffect deps или React.memo компоненты. НЕ используй для: простых строк, чисел, boolean значений.
+        </div>
+
+        <div class="tip">
+            В Swift ты мог использовать <code>lazy var</code> для отложенного вычисления. Разница: lazy var вычисляется один раз и никогда не инвалидируется. useMemo перевычисляется при изменении зависимостей. Это ближе к "умному кешу" чем к lazy initialization. Для one-time initialization в React используй <code>useState(() => expensiveInit())</code> или <code>useRef</code>.
+        </div>
+
+        <div class="key-insight">
+            Триада оптимизации React: <code>useMemo</code> (кешируй значения) + <code>useCallback</code> (кешируй функции) + <code>React.memo</code> (пропускай ре-рендер компонента). Они работают вместе: React.memo сравнивает props по ссылке, useMemo/useCallback обеспечивают стабильные ссылки. Без useMemo/useCallback React.memo бесполезен (props всегда "новые").
+        </div>
+    </div>
+
+    <!-- ======================= SLIDE: React.memo ======================= -->
+    <div class="slide slide-concept">
+        <h2>🛡️ React.memo — предотвращение re-render</h2>
+
+        <p>По умолчанию в React, когда родительский компонент перерендеривается, <strong>все дочерние компоненты тоже перерендериваются</strong>, даже если их props не изменились. Это отличается от SwiftUI, где фреймворк автоматически определяет, что View не изменился (через Equatable), и пропускает перерисовку. В React эту оптимизацию нужно делать вручную через <code>React.memo</code>.</p>
+
+        <p>React.memo — это Higher-Order Component (HOC), который оборачивает твой компонент и добавляет <strong>shallow comparison</strong> props перед рендером. Shallow comparison означает: для каждого пропса проверяется <code>Object.is(prevProp, nextProp)</code>. Если все props равны — рендер пропускается. "Shallow" потому что вложенные объекты сравниваются по ссылке, не по содержимому.</p>
+
+        <p>Когда использовать React.memo: (1) компонент рендерится часто (например, элемент списка в FlatList); (2) компонент тяжёлый (содержит сложный UI или вычисления); (3) props стабильны (используешь useMemo/useCallback для объектов и функций). Не оборачивай каждый компонент в memo — для простых компонентов overhead сравнения может быть дороже самого рендера.</p>
+
+        <p>Для отладки используй React DevTools Profiler: он показывает, сколько раз и почему каждый компонент перерендерился. Вкладка "Why did this render?" покажет, какой именно prop изменился. Это незаменимый инструмент, аналог Instruments Time Profiler в Xcode.</p>
+
+        <div class="code-block">// Без memo — рендерится при ЛЮБОМ изменении родителя
+function TeamRow({ team, onSelect }) {
+    console.log('TeamRow render', team.id);  // Вызовется часто!
+    return (...);
+}
+
+// С memo — рендерится только если props изменились
+const TeamRow = React.memo(function TeamRow({ team, onSelect }) {
+    console.log('TeamRow render', team.id);  // Только при изменении team/onSelect
+    return (...);
+});
+
+// С кастомным сравнением (как Equatable)
+const TeamRow = React.memo(
+    function TeamRow({ team, onSelect }) { ... },
+    (prevProps, nextProps) => {
+        // return true = НЕ рендерить (props равны)
+        return prevProps.team.id === nextProps.team.id;
+    }
+);</div>
+        
+        <div class="tip">
+            <code>React.memo</code> похож на <code>Equatable</code> для SwiftUI View. Если props не изменились — skip render. Второй аргумент React.memo — кастомная функция сравнения (как кастомный <code>==</code> в Equatable). Возвращай <code>true</code> если props равны (НЕ рендерить), <code>false</code> если изменились (рендерить). Обрати внимание: это <strong>обратная логика</strong> shouldComponentUpdate из классов.
+        </div>
+
+        <div class="warning">
+            React.memo сравнивает только props, НЕ state и НЕ context. Если компонент использует <code>useContext</code> или свой useState — он перерендерится при их изменении даже с React.memo. Это частый источник путаницы: "я обернул в memo, почему всё ещё рендерится?" — потому что внутри useState или context изменился.
+        </div>
+
+        <div class="key-insight">
+            Порядок оптимизации списков: (1) сначала оберни элемент списка в <code>React.memo</code>; (2) затем стабилизируй callback-props через <code>useCallback</code>; (3) затем добавь <code>getItemLayout</code> если высота фиксированная; (4) профилируй через React DevTools. Не делай шаг 4 до шагов 1-3 — без мемоизации профилирование покажет "всё рендерится", что неинформативно.
+        </div>
+    </div>
+
+    <!-- ======================= SLIDE: EXERCISE 3 ======================= -->
+    <div class="slide slide-exercise">
+        <h2>✏️ Упражнение 3: Оптимизированный список</h2>
+        
+        <div class="exercise-box">
+            <h3>Задание</h3>
+            <p>Улучши компонент TeamList из упражнения 2:</p>
+            <ol>
+                <li>Добавь поиск по названию команды (фильтрация)</li>
+                <li>Используй <code>useMemo</code> для фильтрованного списка</li>
+                <li>Оберни <code>TeamRow</code> в <code>React.memo</code></li>
+                <li>Используй <code>useCallback</code> для обработчика выбора</li>
+            </ol>
+            
+            <button class="solution-toggle" onclick="toggleSolution(this)">Показать решение</button>
+            
+            <div class="solution-content">
+                <div class="code-block">// TeamRow с memo
+const TeamRow = React.memo(function TeamRow({ team, onSelect }) {
+    return (
+        &lt;TouchableOpacity onPress={() => onSelect(team)}&gt;
+            &lt;View style={styles.row}&gt;
+                &lt;Text style={styles.name}&gt;{team.name}&lt;/Text&gt;
+                &lt;Text style={styles.country}&gt;{team.country}&lt;/Text&gt;
+            &lt;/View&gt;
+        &lt;/TouchableOpacity&gt;
+    );
+});
+
+function TeamList() {
+    const [teams, setTeams] = useState([]);
+    const [search, setSearch] = useState('');
+    const [loading, setLoading] = useState(true);
+    
+    useEffect(() => {
+        fetchTeams().then(data => {
+            setTeams(data);
+            setLoading(false);
+        });
+    }, []);
+    
+    // useMemo для фильтрации
+    const filteredTeams = useMemo(() => {
+        if (!search) return teams;
+        const lower = search.toLowerCase();
+        return teams.filter(t => 
+            t.name.toLowerCase().includes(lower)
+        );
+    }, [teams, search]);
+    
+    // useCallback для обработчика
+    const handleSelect = useCallback((team) => {
+        console.log('Selected:', team.name);
+    }, []);
+    
+    if (loading) return &lt;ActivityIndicator /&gt;;
+    
+    return (
+        &lt;View style={styles.container}&gt;
+            &lt;TextInput
+                style={styles.search}
+                placeholder="Поиск..."
+                value={search}
+                onChangeText={setSearch}
+            /&gt;
+            &lt;FlatList
+                data={filteredTeams}
+                keyExtractor={item => item.id}
+                renderItem={({ item }) => (
+                    &lt;TeamRow team={item} onSelect={handleSelect} /&gt;
+                )}
+            /&gt;
+        &lt;/View&gt;
+    );
+}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======================= SLIDE: Rules of Hooks ======================= -->
+    <div class="slide slide-concept">
+        <h2>📜 Правила Hooks — выучи наизусть!</h2>
+
+        <p>Правила хуков выглядят как произвольные ограничения, но у них есть <strong>техническая причина</strong>. React хранит state каждого хука в связанном списке (linked list), привязанном к позиции компонента в дереве. При каждом рендере React проходит этот список по порядку: первый вызов useState — первый элемент списка, второй — второй, и так далее. React идентифицирует хуки <strong>по порядковому номеру вызова</strong>, а не по имени.</p>
+
+        <p>Если ты поместишь хук внутрь условия <code>if</code>, то при одном рендере может быть 3 вызова хуков, а при следующем — 2. React потеряет соответствие между хуками и их данными: useState для <code>count</code> вернёт значение, предназначенное для <code>name</code>. Это приведёт к катастрофическим и трудно-отлавливаемым багам.</p>
+
+        <p>В Swift такой проблемы нет: property wrappers (@State, @Binding) — это свойства struct, и компилятор гарантирует их наличие. В React хуки — это runtime-вызовы, и компилятор (TypeScript) не может проверить их порядок. Поэтому существует ESLint плагин <code>eslint-plugin-react-hooks</code>, который ловит нарушения на этапе написания кода.</p>
+
+        <p>Правило простое: <strong>все хуки — на верхнем уровне функции компонента</strong>. Условную логику размещай <strong>внутри</strong> хука (в callback useEffect, в теле useState callback), а не вокруг вызова хука.</p>
+
+        <div class="code-block">// ❌ НЕЛЬЗЯ: Hooks внутри условий
+function BadComponent({ show }) {
+    if (show) {
+        const [value, setValue] = useState(0);  // 💥 Error!
+    }
+}
+
+// ❌ НЕЛЬЗЯ: Hooks внутри циклов
+function BadComponent({ items }) {
+    items.forEach(item => {
+        useEffect(() => {});  // 💥 Error!
+    });
+}
+
+// ❌ НЕЛЬЗЯ: Hooks во вложенных функциях
+function BadComponent() {
+    const handleClick = () => {
+        const [x, setX] = useState(0);  // 💥 Error!
+    };
+}
+
+// ✅ ПРАВИЛЬНО: Hooks только на верхнем уровне
+function GoodComponent({ show }) {
+    const [value, setValue] = useState(0);  // ✅
+    
+    useEffect(() => {
+        if (show) {
+            // логика здесь
+        }
+    }, [show]);
+}</div>
+        
+        <div class="key-insight">
+            React отслеживает hooks по <strong>порядку вызова</strong>. Если порядок меняется — всё ломается. Два правила: (1) вызывай хуки только на верхнем уровне (не в if, for, nested functions); (2) вызывай хуки только из React-компонентов или из других custom hooks (не из обычных функций). ESLint правило <code>react-hooks/rules-of-hooks</code> обязательно — включай в каждый проект.
+        </div>
+
+        <div class="warning">
+            Нарушение правил хуков не всегда падает с ошибкой — иногда приложение молча работает неправильно. Например, хук может вернуть state другого хука. Это крайне сложно отладить. В development-режиме React Strict Mode помогает выявить некоторые проблемы, вызывая компоненты и эффекты дважды.
+        </div>
+
+        <div class="tip">
+            В Swift ты мог создать ObservableObject в любом месте — в init, в вычисляемом свойстве, в замыкании. В React хуки строго ограничены верхним уровнем компонента. Если тебе нужна условная логика — выноси её в отдельный компонент: вместо <code>if (show) { const [x] = useState(0); }</code> создай <code>&lt;ConditionalComponent /&gt;</code> который рендерится условно и содержит свой useState.
+        </div>
+    </div>
+
+    <!-- ======================= SLIDE: Custom Hooks ======================= -->
+    <div class="slide slide-concept">
+        <h2>🔧 Custom Hooks — переиспользуемая логика</h2>
+
+        <p>Custom hooks — это главный паттерн архитектуры в React. Они заменяют ViewModel (MVVM), Interactor (VIPER), Presenter (MVP) и другие паттерны, которые ты использовал в iOS. По сути, custom hook — это <strong>функция, которая инкапсулирует stateful логику</strong> и может использовать другие хуки. Она начинается с префикса <code>use</code> — это не просто конвенция, ESLint использует этот префикс для проверки правил хуков.</p>
+
+        <p>В iOS мире ты бы создал <code>TeamsViewModel: ObservableObject</code> с <code>@Published var teams</code>, <code>@Published var loading</code>, <code>func fetch()</code>. В React тот же паттерн выражается через custom hook <code>useTeams()</code>, который возвращает <code>{ teams, loading, error, fetch }</code>. Преимущество хука: он не привязан к конкретному компоненту. ViewModel в iOS обычно создаётся как свойство View и живёт вместе с ним. Hook можно вызвать в любом компоненте, и каждый компонент получит свой собственный независимый экземпляр state.</p>
+
+        <p>Паттерн композиции: custom hooks могут использовать другие custom hooks. <code>useTeams()</code> внутри может использовать <code>useFetch()</code>, который внутри использует <code>useState</code> и <code>useEffect</code>. Это как протоколы с default implementation в Swift, но гибче — ты комбинируешь поведение через вызовы функций, а не через наследование или протоколы.</p>
+
+        <p>Тестирование: custom hooks легко тестировать изолированно через <code>@testing-library/react-hooks</code>. Тест вызывает хук, эмулирует действия (act), проверяет результат. Это значительно проще, чем тестировать ObservableObject в Swift, где нужно подписываться на @Published и ждать обновлений.</p>
+
+        <div class="code-compare">
+            <div class="code-box swift">
+                <div class="code-header swift">🍎 Swift ViewModel</div>
+                <div class="code-content">class TeamsViewModel: ObservableObject {
+    @Published var teams: [Team] = []
+    @Published var loading = false
+    @Published var error: Error?
+    
+    func fetch() async {
+        loading = true
+        do {
+            teams = try await api.fetchTeams()
+        } catch {
+            self.error = error
+        }
+        loading = false
+    }
+}</div>
+            </div>
+            <div class="code-box react">
+                <div class="code-header react">⚛️ React Custom Hook</div>
+                <div class="code-content">// Конвенция: имя начинается с "use"
+function useTeams() {
+    const [teams, setTeams] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+    
+    const fetch = useCallback(async () => {
+        setLoading(true);
+        try {
+            const data = await api.fetchTeams();
+            setTeams(data);
+        } catch (e) {
+            setError(e);
+        }
+        setLoading(false);
+    }, []);
+    
+    return { teams, loading, error, fetch };
+}</div>
+            </div>
+        </div>
+        
+        <div class="tip">
+            Custom Hook — это просто функция, которая использует другие hooks. Как ViewModel, но проще. Важное отличие: ViewModel в iOS — один экземпляр на View (обычно через @StateObject). Custom hook создаёт <strong>новый изолированный state</strong> при каждом вызове. Два компонента, вызывающие <code>useTeams()</code>, получат два разных списка teams. Для shared state используй Context или state manager (Redux, Zustand).
+        </div>
+
+        <div class="warning">
+            Именование критично: если функция не начинается с <code>use</code>, ESLint не будет проверять правила хуков внутри неё. <code>fetchTeams()</code> — обычная функция, хуки внутри неё вызовут runtime-ошибку. <code>useTeams()</code> — custom hook, хуки внутри работают корректно. Это техническое ограничение, не стилистическое предпочтение.
+        </div>
+
+        <div class="key-insight">
+            Типичные custom hooks в проекте: <code>useFetch(url)</code> — generic загрузка данных, <code>useDebounce(value, delay)</code> — задержка для поиска, <code>useLocalStorage(key)</code> — persistent state, <code>useMediaQuery(query)</code> — responsive design, <code>useForm(config)</code> — управление формами. Библиотека <code>react-use</code> содержит десятки готовых хуков — не изобретай велосипед.
+        </div>
+    </div>
+
+    <!-- ======================= SLIDE: Using Custom Hook ======================= -->
+    <div class="slide slide-code">
+        <h2>Использование Custom Hook</h2>
+
+        <p>Этот слайд показывает главную идею custom hooks — <strong>separation of concerns</strong> (разделение ответственности). Компонент <code>TeamsScreen</code> не знает ничего о сетевых запросах, обработке ошибок или преобразовании данных. Он просто вызывает <code>useTeams()</code> и получает готовые данные. Это тот же принцип, что MVVM в iOS: View не знает о сети, ViewModel инкапсулирует логику.</p>
+
+        <p>Преимущество перед ViewModel: <strong>переиспользуемость и композиция</strong>. В iOS ViewModel обычно привязан к конкретному экрану через @StateObject. Custom hook можно вызвать в любом компоненте — экран, модальное окно, виджет. Более того, можно комбинировать хуки: <code>const { teams } = useTeams(); const { favorites } = useFavorites(); const display = useMemo(() => mergeTeamsWithFavorites(teams, favorites), [teams, favorites]);</code></p>
+
+        <p>Обрати внимание на структуру файлов: <code>useTeams.ts</code> — отдельный файл для хука, <code>TeamsScreen.tsx</code> — компонент. Конвенция: один хук = один файл, имя файла совпадает с именем хука. Папка <code>hooks/</code> для shared hooks, или хук рядом с компонентом, если используется только там. В iOS мире это аналог раздельных файлов ViewModel и View.</p>
+
+        <p>Паттерн <code>if (loading) return; if (error) return;</code> — это "early return" для разных состояний. В SwiftUI ты бы использовал <code>switch viewModel.state { case .loading: ... case .error: ... case .loaded: ... }</code>. В React нет встроенного enum для состояний загрузки, но паттерн тот же: проверяй состояния по порядку и возвращай соответствующий UI. Библиотеки вроде React Query / TanStack Query делают это автоматически.</p>
+
+        <div class="code-block">// useTeams.ts
+export function useTeams() {
+    const [teams, setTeams] = useState&lt;Team[]&gt;([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState&lt;string | null&gt;(null);
+    
+    useEffect(() => {
+        fetchTeams()
+            .then(setTeams)
+            .catch(e => setError(e.message))
+            .finally(() => setLoading(false));
+    }, []);
+    
+    return { teams, loading, error };
+}
+
+// TeamsScreen.tsx
+function TeamsScreen() {
+    const { teams, loading, error } = useTeams();  // Вся логика скрыта!
+    
+    if (loading) return &lt;Loading /&gt;;
+    if (error) return &lt;Error message={error} /&gt;;
+    
+    return &lt;TeamList teams={teams} /&gt;;
+}</div>
+        
+        <div class="key-insight">
+            Custom Hooks позволяют переиспользовать <strong>stateful логику</strong> между компонентами. Каждый вызов хука создаёт изолированный state — два компонента, использующие <code>useTeams()</code>, будут иметь два разных набора данных, двух разных loading-состояний. Это НЕ singleton как Redux store — это фабрика state, как создание нового ViewModel для каждого экрана.
+        </div>
+
+        <div class="tip">
+            В production-проектах вместо ручных <code>useTeams()</code> хуков часто используют <strong>TanStack Query (React Query)</strong> — библиотеку для server state management. Она автоматически добавляет: кеширование, дедупликацию запросов, background refetch, retry, optimistic updates, pagination. Это как URLSession с NSURLCache + Combine, но гораздо мощнее и проще. Рекомендуется для любого проекта с API-вызовами.
+        </div>
+
+        <div class="warning">
+            Антипаттерн: не создавай "God Hook" — один хук, который делает всё (<code>useApp()</code> с 20 полями state). Каждый хук должен отвечать за одну задачу (Single Responsibility Principle). <code>useTeams()</code> для загрузки команд, <code>useSearch()</code> для поиска, <code>useAuth()</code> для авторизации. Именно так разделяй — ты уже знаешь этот принцип из iOS.
+        </div>
+    </div>
+
+    <!-- ======================= SLIDE: FINAL EXERCISE ======================= -->
+    <div class="slide slide-exercise">
+        <h2>✏️ Финальное упражнение дня 1</h2>
+        
+        <div class="exercise-box">
+            <h3>Задание: Football Teams Explorer (базовая версия)</h3>
+            <p>Создай приложение которое:</p>
+            <ol>
+                <li>Загружает список команд при старте</li>
+                <li>Показывает их в FlatList с поиском</li>
+                <li>При нажатии на команду — показывает alert с деталями</li>
+                <li>Имеет pull-to-refresh</li>
+            </ol>
+            
+            <p style="margin-top: 15px;"><strong>Структура:</strong></p>
+            <ul>
+                <li><code>useTeams()</code> — custom hook для загрузки</li>
+                <li><code>TeamRow</code> — мемоизированный компонент строки</li>
+                <li><code>TeamsScreen</code> — главный экран</li>
+            </ul>
+            
+            <button class="solution-toggle" onclick="toggleSolution(this)">Показать решение</button>
+            
+            <div class="solution-content">
+                <div class="code-block">// types.ts
+interface Team {
+    id: string;
+    name: string;
+    country: string;
+    founded: number;
+}
+
+// useTeams.ts
+function useTeams() {
+    const [teams, setTeams] = useState&lt;Team[]&gt;([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState&lt;string | null&gt;(null);
+    const [refreshing, setRefreshing] = useState(false);
+    
+    const load = useCallback(async (isRefresh = false) => {
+        if (isRefresh) setRefreshing(true);
+        else setLoading(true);
+        
+        try {
+            const data = await fetchTeams();
+            setTeams(data);
+            setError(null);
+        } catch (e) {
+            setError(e.message);
+        } finally {
+            setLoading(false);
+            setRefreshing(false);
+        }
+    }, []);
+    
+    useEffect(() => { load(); }, [load]);
+    
+    const refresh = useCallback(() => load(true), [load]);
+    
+    return { teams, loading, error, refreshing, refresh };
+}
+
+// TeamRow.tsx
+const TeamRow = React.memo(function TeamRow({ 
+    team, 
+    onPress 
+}: { 
+    team: Team; 
+    onPress: (team: Team) => void;
+}) {
+    return (
+        &lt;TouchableOpacity 
+            style={styles.row}
+            onPress={() => onPress(team)}
+        &gt;
+            &lt;Text style={styles.name}&gt;{team.name}&lt;/Text&gt;
+            &lt;Text style={styles.meta}&gt;
+                {team.country} • {team.founded}
+            &lt;/Text&gt;
+        &lt;/TouchableOpacity&gt;
+    );
+});
+
+// TeamsScreen.tsx
+function TeamsScreen() {
+    const { teams, loading, error, refreshing, refresh } = useTeams();
+    const [search, setSearch] = useState('');
+    
+    const filtered = useMemo(() => {
+        if (!search) return teams;
+        return teams.filter(t => 
+            t.name.toLowerCase().includes(search.toLowerCase())
+        );
+    }, [teams, search]);
+    
+    const handlePress = useCallback((team: Team) => {
+        Alert.alert(
+            team.name,
+            `Country: ${team.country}\nFounded: ${team.founded}`
+        );
+    }, []);
+    
+    if (loading) {
+        return &lt;ActivityIndicator style={styles.loader} /&gt;;
+    }
+    
+    if (error) {
+        return (
+            &lt;View style={styles.error}&gt;
+                &lt;Text&gt;{error}&lt;/Text&gt;
+                &lt;Button title="Retry" onPress={refresh} /&gt;
+            &lt;/View&gt;
+        );
+    }
+    
+    return (
+        &lt;View style={styles.container}&gt;
+            &lt;TextInput
+                style={styles.search}
+                placeholder="Search teams..."
+                value={search}
+                onChangeText={setSearch}
+            /&gt;
+            &lt;FlatList
+                data={filtered}
+                keyExtractor={item => item.id}
+                renderItem={({ item }) => (
+                    &lt;TeamRow team={item} onPress={handlePress} /&gt;
+                )}
+                refreshing={refreshing}
+                onRefresh={refresh}
+            /&gt;
+        &lt;/View&gt;
+    );
+}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======================= SLIDE: Day 1 Summary ======================= -->
+    <div class="slide slide-intro">
+        <h2>📚 День 1: Что ты выучил</h2>
+        <div style="text-align: left; max-width: 700px;">
+            <ul>
+                <li>✅ <strong>JS/TS basics</strong> — const/let, деструктуризация, async/await</li>
+                <li>✅ <strong>JSX</strong> — декларативный UI как SwiftUI DSL</li>
+                <li>✅ <strong>useState</strong> — локальное состояние (@State)</li>
+                <li>✅ <strong>useEffect</strong> — side effects и cleanup (onAppear + Combine)</li>
+                <li>✅ <strong>FlatList</strong> — UITableView на стероидах</li>
+                <li>✅ <strong>useMemo / useCallback / React.memo</strong> — оптимизация</li>
+                <li>✅ <strong>Custom Hooks</strong> — переиспользуемая логика (ViewModel)</li>
+            </ul>
+        </div>
+        <p style="margin-top: 40px; opacity: 0.8;">Завтра: Navigation, State Management, Architecture</p>
+    </div>
+
+    <!-- ======================= NAVIGATION ======================= -->
+    <div class="controls">
+        <button id="btnPrev" onclick="prev()">← Главная</button>
+        <button id="btnNext" onclick="next()">Далее →</button>
+    </div>
+
+    <script>
+        let current = 0;
+        const slides = document.querySelectorAll('.slide');
+        const total = slides.length;
+        document.getElementById('total').textContent = total;
+
+        var prevPage = 'index.html';
+        var nextPage = 'day2-navigation-architecture-state.html';
+
+        function show(n) {
+            slides[current].classList.remove('active');
+            current = (n + total) % total;
+            slides[current].classList.add('active');
+            document.getElementById('current').textContent = current + 1;
+            document.getElementById('progress').style.width = ((current + 1) / total * 100) + '%';
+            document.getElementById('btnPrev').textContent = current <= 0 ? '← Главная' : '← Назад';
+            document.getElementById('btnNext').textContent = current >= total - 1 ? 'День 2 →' : 'Далее →';
+        }
+
+        function next() { if (current >= total - 1) { location.href = nextPage; } else { show(current + 1); } }
+        function prev() { if (current <= 0) { location.href = prevPage; } else { show(current - 1); } }
+
+        function toggleSolution(btn) {
+            const content = btn.nextElementSibling;
+            content.classList.toggle('visible');
+            btn.textContent = content.classList.contains('visible') 
+                ? 'Скрыть решение' 
+                : 'Показать решение';
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); next(); }
+            if (e.key === 'ArrowLeft') { e.preventDefault(); prev(); }
+        });
+
+        // Syntax highlighting
+        (function() {
+            function hl(raw, lang) {
+                var saved = [];
+                function sv(h) { saved.push(h); return '\x01s' + (saved.length - 1) + '\x01'; }
+                var s = raw.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                // Comments and strings in one pass
+                s = s.replace(/\/\/.*|\/\*[\s\S]*?\*\/|"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|`(?:[^`\\]|\\.)*`/g, function(m) {
+                    if (m[0] === '/') return sv('<span class="hl-c">' + m + '</span>');
+                    return sv('<span class="hl-s">' + m + '</span>');
+                });
+                // Swift decorators
+                if (lang === 'swift') s = s.replace(/@\w+/g, function(m) { return sv('<span class="hl-d">' + m + '</span>'); });
+                // Keywords
+                var kw = lang === 'swift'
+                    ? 'struct|class|func|var|let|return|if|else|for|in|import|protocol|enum|case|switch|guard|throw|throws|try|catch|async|await|some|where|extension|typealias|init|self|true|false|nil|private|public|static|override|mutating|weak|lazy|do'
+                    : 'const|let|var|function|return|if|else|for|of|in|import|export|from|default|class|extends|new|async|await|throw|try|catch|typeof|interface|type|enum|true|false|null|undefined|this|void|switch|case|break';
+                s = s.replace(new RegExp('\\b(' + kw + ')\\b', 'g'), '<span class="hl-k">$1</span>');
+                // JSX tags
+                if (lang !== 'swift') s = s.replace(/(&lt;\/?)([\w.]+)/g, function(_, pre, tag) { return pre + sv('<span class="hl-t">' + tag + '</span>'); });
+                // Numbers
+                s = s.replace(/\b(\d+\.?\d*)\b/g, '<span class="hl-n">$1</span>');
+                // Types (PascalCase)
+                s = s.replace(/\b([A-Z][a-zA-Z0-9]+)\b/g, '<span class="hl-t">$1</span>');
+                // Restore
+                s = s.replace(/\x01s(\d+)\x01/g, function(_, i) { return saved[+i]; });
+                return s;
+            }
+            document.querySelectorAll('.code-content').forEach(function(el) {
+                var box = el.closest('.code-box');
+                var lang = box && box.classList.contains('swift') ? 'swift' : 'js';
+                el.innerHTML = hl(el.textContent, lang);
+            });
+            document.querySelectorAll('.code-block').forEach(function(el) {
+                el.innerHTML = hl(el.textContent, 'js');
+            });
+        })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Swift → React Native: 3-дневный интенсив</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro", system-ui, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+            min-height: 100vh;
+            color: #e2e8f0;
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+        
+        h1 {
+            font-size: 2.5em;
+            background: linear-gradient(135deg, #60a5fa, #a78bfa);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 15px;
+        }
+        
+        .subtitle {
+            font-size: 1.2em;
+            color: #94a3b8;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .badge {
+            display: inline-block;
+            background: rgba(168, 85, 247, 0.2);
+            color: #c4b5fd;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin-top: 15px;
+        }
+        
+        .days-grid {
+            display: grid;
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .day-card {
+            background: rgba(30, 41, 59, 0.8);
+            border-radius: 16px;
+            padding: 30px;
+            border: 1px solid rgba(148, 163, 184, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .day-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(96, 165, 250, 0.3);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .day-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .day-number {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5em;
+            font-weight: bold;
+        }
+        
+        .day-title {
+            flex: 1;
+        }
+        
+        .day-title h2 {
+            font-size: 1.4em;
+            color: #f1f5f9;
+            margin-bottom: 5px;
+        }
+        
+        .day-title span {
+            color: #94a3b8;
+            font-size: 0.9em;
+        }
+        
+        .topics {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        
+        .topic {
+            background: rgba(59, 130, 246, 0.15);
+            color: #93c5fd;
+            padding: 6px 14px;
+            border-radius: 6px;
+            font-size: 0.85em;
+        }
+        
+        .topic.swift {
+            background: rgba(249, 115, 22, 0.15);
+            color: #fdba74;
+        }
+        
+        .exercises {
+            color: #94a3b8;
+            font-size: 0.95em;
+            margin-bottom: 20px;
+        }
+        
+        .exercises strong {
+            color: #22c55e;
+        }
+        
+        .start-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.2s;
+        }
+        
+        .start-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
+        }
+        
+        .cheatsheet {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            border-radius: 12px;
+            padding: 25px;
+            margin-top: 40px;
+        }
+        
+        .cheatsheet h3 {
+            color: #4ade80;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .mapping-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px 30px;
+        }
+        
+        .mapping {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-family: "SF Mono", Menlo, monospace;
+            font-size: 0.85em;
+        }
+        
+        .mapping .swift {
+            color: #fdba74;
+        }
+        
+        .mapping .arrow {
+            color: #4ade80;
+        }
+        
+        .mapping .react {
+            color: #93c5fd;
+        }
+        
+        .old-lessons {
+            margin-top: 50px;
+            padding-top: 30px;
+            border-top: 1px solid rgba(148, 163, 184, 0.1);
+        }
+        
+        .old-lessons h3 {
+            color: #64748b;
+            font-size: 1em;
+            margin-bottom: 15px;
+        }
+        
+        .old-lessons ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        
+        .old-lessons a {
+            color: #64748b;
+            text-decoration: none;
+            font-size: 0.85em;
+            padding: 6px 12px;
+            border-radius: 6px;
+            background: rgba(100, 116, 139, 0.1);
+            transition: all 0.2s;
+        }
+        
+        .old-lessons a:hover {
+            background: rgba(100, 116, 139, 0.2);
+            color: #94a3b8;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 60px;
+            color: #64748b;
+            font-size: 0.9em;
+        }
+        
+        @media (max-width: 600px) {
+            h1 { font-size: 1.8em; }
+            .mapping-grid { grid-template-columns: 1fr; }
+            .day-header { flex-direction: column; text-align: center; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🚀 Swift → React Native</h1>
+            <p class="subtitle">3-дневный интенсив для iOS разработчика с 10+ лет опыта. Подготовка к live coding интервью в Onward.</p>
+            <span class="badge">⏱️ ~12 часов материала</span>
+        </header>
+        
+        <div class="days-grid">
+            <!-- Day 1 -->
+            <div class="day-card">
+                <div class="day-header">
+                    <div class="day-number">1</div>
+                    <div class="day-title">
+                        <h2>React Fundamentals для iOS разработчика</h2>
+                        <span>3-4 часа • От SwiftUI @State к useState</span>
+                    </div>
+                </div>
+                
+                <div class="topics">
+                    <span class="topic swift">@State</span>
+                    <span class="topic">→ useState</span>
+                    <span class="topic swift">onAppear</span>
+                    <span class="topic">→ useEffect</span>
+                    <span class="topic swift">UITableView</span>
+                    <span class="topic">→ FlatList</span>
+                    <span class="topic">useCallback</span>
+                    <span class="topic">useMemo</span>
+                    <span class="topic">React.memo</span>
+                    <span class="topic">Custom Hooks</span>
+                </div>
+                
+                <p class="exercises">
+                    <strong>4 упражнения:</strong> Счётчик команд, Загрузка данных, Оптимизированный список, Football Teams Explorer (базовая версия)
+                </p>
+                
+                <a href="day1-react-fundamentals-for-ios-devs.html" class="start-btn">
+                    Начать День 1 →
+                </a>
+            </div>
+            
+            <!-- Day 2 -->
+            <div class="day-card">
+                <div class="day-header">
+                    <div class="day-number">2</div>
+                    <div class="day-title">
+                        <h2>Navigation + Architecture + State</h2>
+                        <span>3-4 часа • Expo Router, Zustand, React Query</span>
+                    </div>
+                </div>
+                
+                <div class="topics">
+                    <span class="topic swift">Coordinator</span>
+                    <span class="topic">→ Expo Router</span>
+                    <span class="topic swift">@EnvironmentObject</span>
+                    <span class="topic">→ Context</span>
+                    <span class="topic">Zustand</span>
+                    <span class="topic">React Query</span>
+                    <span class="topic">TypeScript patterns</span>
+                    <span class="topic">Jest + RNTL</span>
+                </div>
+                
+                <p class="exercises">
+                    <strong>3 упражнения:</strong> Базовая навигация, Favorites с Zustand, Full-featured Team Detail
+                </p>
+                
+                <a href="day2-navigation-architecture-state.html" class="start-btn">
+                    Начать День 2 →
+                </a>
+            </div>
+            
+            <!-- Day 3 -->
+            <div class="day-card">
+                <div class="day-header">
+                    <div class="day-number">3</div>
+                    <div class="day-title">
+                        <h2>Real-time + Performance + Live Coding</h2>
+                        <span>3-4 часа • WebSocket, Maps, Interview Practice</span>
+                    </div>
+                </div>
+                
+                <div class="topics">
+                    <span class="topic swift">URLSessionWebSocketTask</span>
+                    <span class="topic">→ WebSocket</span>
+                    <span class="topic swift">CoreLocation</span>
+                    <span class="topic">→ expo-location</span>
+                    <span class="topic swift">MapKit</span>
+                    <span class="topic">→ react-native-maps</span>
+                    <span class="topic">Socket.io</span>
+                    <span class="topic">Reanimated</span>
+                    <span class="topic">Performance</span>
+                </div>
+                
+                <p class="exercises">
+                    <strong>4 практикума:</strong> Live Ride Tracker, Team Search (15 мин), Add Player Form (20 мин), Football Teams с фильтрами (30 мин)
+                </p>
+                
+                <a href="day3-realtime-performance-practice.html" class="start-btn">
+                    Начать День 3 →
+                </a>
+            </div>
+            <!-- Assessment Guide -->
+            <div class="day-card">
+                <div class="day-header">
+                    <div class="day-number" style="background: linear-gradient(135deg, #22c55e, #3b82f6);">✓</div>
+                    <div class="day-title">
+                        <h2>Assessment Guide: Football Teams Explorer</h2>
+                        <span>Финал • Реальный код из домашнего задания</span>
+                    </div>
+                </div>
+
+                <div class="topics">
+                    <span class="topic">useTeams hook</span>
+                    <span class="topic">FlatList</span>
+                    <span class="topic">useFilters + useMemo</span>
+                    <span class="topic">expo-location</span>
+                    <span class="topic">FilterModal</span>
+                    <span class="topic">TypeScript</span>
+                    <span class="topic">Performance</span>
+                    <span class="topic">Live Coding</span>
+                </div>
+
+                <p class="exercises">
+                    <strong>18 слайдов:</strong> Разбор реального кода проекта, маппинг концептов из Дней 1-3, чеклист для live coding
+                </p>
+
+                <a href="assessment-guide.html" class="start-btn" style="background: linear-gradient(135deg, #22c55e, #3b82f6);">
+                    Открыть Assessment Guide →
+                </a>
+            </div>
+        </div>
+
+        <!-- Quick Reference -->
+        <div class="cheatsheet">
+            <h3>📋 Quick Reference: Swift → React Native</h3>
+            <div class="mapping-grid">
+                <div class="mapping">
+                    <span class="swift">@State</span>
+                    <span class="arrow">→</span>
+                    <span class="react">useState</span>
+                </div>
+                <div class="mapping">
+                    <span class="swift">@Binding</span>
+                    <span class="arrow">→</span>
+                    <span class="react">props + callback</span>
+                </div>
+                <div class="mapping">
+                    <span class="swift">onAppear</span>
+                    <span class="arrow">→</span>
+                    <span class="react">useEffect([], [])</span>
+                </div>
+                <div class="mapping">
+                    <span class="swift">Combine</span>
+                    <span class="arrow">→</span>
+                    <span class="react">React Query</span>
+                </div>
+                <div class="mapping">
+                    <span class="swift">UITableView</span>
+                    <span class="arrow">→</span>
+                    <span class="react">FlatList</span>
+                </div>
+                <div class="mapping">
+                    <span class="swift">NavigationStack</span>
+                    <span class="arrow">→</span>
+                    <span class="react">Stack Navigator</span>
+                </div>
+                <div class="mapping">
+                    <span class="swift">Codable</span>
+                    <span class="arrow">→</span>
+                    <span class="react">TypeScript interface</span>
+                </div>
+                <div class="mapping">
+                    <span class="swift">XCTest</span>
+                    <span class="arrow">→</span>
+                    <span class="react">Jest + RNTL</span>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Создано для Олега • Onward Rides Interview Prep • Март 2026</p>
+        </footer>
+    </div>
+</body>
+</html>

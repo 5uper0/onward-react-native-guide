@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Assessment Guide: Football Teams Explorer</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "SF Pro", system-ui, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 50%, #0f172a 100%);
+            min-height: 100vh;
+            color: #e2e8f0;
+            overflow: hidden;
+        }
+
+        .page-nav {
+            position: fixed; top: 20px; left: 20px; display: flex; gap: 8px; z-index: 100;
+        }
+        .page-nav a {
+            background: rgba(0,0,0,0.7); color: #94a3b8; padding: 8px 14px;
+            border-radius: 20px; text-decoration: none; font-size: 0.8em;
+            transition: all 0.2s; backdrop-filter: blur(10px);
+        }
+        .page-nav a:hover { background: rgba(59,130,246,0.3); color: #e2e8f0; }
+        .page-nav a.active { background: #3b82f6; color: white; }
+
+        .slide {
+            display: none; flex-direction: column; align-items: center;
+            justify-content: flex-start; min-height: 100vh; padding: 80px 40px 100px;
+            overflow-y: auto;
+        }
+        .slide.active { display: flex; }
+        .slide h2 { font-size: 1.8em; margin-bottom: 20px; text-align: center; }
+        .slide p { max-width: 800px; line-height: 1.8; margin-bottom: 15px; color: #cbd5e1; font-size: 0.95em; }
+
+        .slide-intro { background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%); justify-content: center; text-align: center; }
+        .slide-intro h2 { font-size: 2.5em; background: linear-gradient(135deg, #60a5fa, #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .slide-concept { background: linear-gradient(135deg, #0c4a6e 0%, #1e3a5f 100%); }
+        .slide-code { background: linear-gradient(135deg, #064e3b 0%, #1a3a2a 100%); }
+        .slide-exercise { background: linear-gradient(135deg, #78350f 0%, #451a03 100%); }
+
+        .code-block {
+            background: #1e293b;
+            border-left: 4px solid #3b82f6;
+            padding: 20px;
+            border-radius: 8px;
+            margin: 20px 0;
+            max-width: 900px;
+            font-family: "SF Mono", Menlo, monospace;
+            font-size: 0.85em;
+            line-height: 1.6;
+            overflow-x: auto;
+            white-space: pre;
+            width: 100%;
+        }
+
+        .code-compare {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            max-width: 900px;
+            width: 100%;
+            margin: 15px 0;
+        }
+        .code-box {
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .code-box.swift { border: 1px solid rgba(249, 115, 22, 0.3); }
+        .code-box.react { border: 1px solid rgba(96, 165, 250, 0.3); }
+        .code-header {
+            padding: 8px 15px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+        .code-header.swift { background: rgba(249, 115, 22, 0.15); color: #fdba74; }
+        .code-header.react { background: rgba(96, 165, 250, 0.15); color: #93c5fd; }
+        .code-content {
+            padding: 15px;
+            font-family: "SF Mono", Menlo, monospace;
+            font-size: 0.8em;
+            line-height: 1.5;
+            white-space: pre;
+            background: rgba(15, 23, 42, 0.6);
+            overflow-x: auto;
+        }
+
+        .tip { background: rgba(59, 130, 246, 0.15); border-left: 3px solid #3b82f6; padding: 15px; border-radius: 0 8px 8px 0; margin: 15px 0; max-width: 800px; width: 100%; }
+        .warning { background: rgba(245, 158, 11, 0.15); border-left: 3px solid #f59e0b; padding: 15px; border-radius: 0 8px 8px 0; margin: 15px 0; max-width: 800px; width: 100%; }
+        .key-insight { background: rgba(34, 197, 94, 0.15); border-left: 3px solid #22c55e; padding: 15px; border-radius: 0 8px 8px 0; margin: 15px 0; max-width: 800px; width: 100%; }
+
+        .mapping-table {
+            max-width: 900px;
+            width: 100%;
+            margin: 20px 0;
+            border-collapse: collapse;
+        }
+        .mapping-table th, .mapping-table td {
+            padding: 10px 16px;
+            text-align: left;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+        }
+        .mapping-table th {
+            background: rgba(59, 130, 246, 0.15);
+            color: #93c5fd;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+        .mapping-table td {
+            font-size: 0.85em;
+            color: #cbd5e1;
+        }
+        .mapping-table td code {
+            background: rgba(30, 41, 59, 0.8);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: "SF Mono", Menlo, monospace;
+            font-size: 0.9em;
+        }
+        .mapping-table tr:hover { background: rgba(59, 130, 246, 0.05); }
+
+        .file-tree {
+            background: rgba(15, 23, 42, 0.6);
+            padding: 20px;
+            border-radius: 12px;
+            font-family: "SF Mono", Menlo, monospace;
+            font-size: 0.85em;
+            line-height: 1.8;
+            max-width: 700px;
+            width: 100%;
+            margin: 15px 0;
+        }
+        .file-tree .dir { color: #93c5fd; }
+        .file-tree .file { color: #a5b4fc; }
+        .file-tree .desc { color: #64748b; }
+
+        .badge { display: inline-block; padding: 4px 12px; border-radius: 12px; font-size: 0.8em; font-weight: 600; margin: 3px 4px; }
+        .badge-day1 { background: rgba(59, 130, 246, 0.2); color: #93c5fd; }
+        .badge-day2 { background: rgba(168, 85, 247, 0.2); color: #c4b5fd; }
+        .badge-day3 { background: rgba(34, 197, 94, 0.2); color: #86efac; }
+
+        .controls {
+            position: fixed; bottom: 0; left: 0; right: 0;
+            display: flex; justify-content: center; gap: 15px;
+            padding: 20px; background: rgba(15, 23, 42, 0.9);
+            backdrop-filter: blur(10px);
+        }
+        .controls button {
+            background: rgba(59, 130, 246, 0.2); color: #93c5fd;
+            border: none; padding: 12px 30px; border-radius: 8px;
+            cursor: pointer; font-size: 1em; transition: all 0.2s;
+        }
+        .controls button:hover { background: rgba(59, 130, 246, 0.4); transform: scale(1.05); }
+
+        .slide-counter {
+            position: fixed; top: 20px; right: 20px;
+            color: #64748b; font-size: 0.9em;
+            backdrop-filter: blur(10px);
+            background: rgba(0,0,0,0.5); padding: 8px 16px; border-radius: 20px;
+        }
+
+        .progress-bar { position: fixed; top: 0; left: 0; right: 0; height: 3px; background: rgba(255,255,255,0.1); }
+        #progress { height: 100%; background: #a855f7; transition: width 0.3s; }
+
+        .diagram {
+            background: rgba(15, 23, 42, 0.8);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 15px 0;
+            font-family: "SF Mono", Menlo, monospace;
+            font-size: 0.85em;
+            white-space: pre;
+            line-height: 1.4;
+            max-width: 900px;
+            width: 100%;
+        }
+
+        /* Syntax highlighting */
+        .hl-k { color: #c084fc; } /* keywords */
+        .hl-s { color: #fbbf24; } /* strings */
+        .hl-c { color: #64748b; } /* comments */
+        .hl-t { color: #4ade80; } /* types */
+        .hl-n { color: #f472b6; } /* numbers */
+        .hl-d { color: #fbbf24; } /* decorators */
+
+        @media (max-width: 768px) {
+            .slide { padding: 70px 20px 100px; }
+            .slide h2 { font-size: 1.4em; }
+            .code-compare { grid-template-columns: 1fr; }
+            .page-nav { top: auto; bottom: 70px; left: 10px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="page-nav">
+        <a href="index.html">Главная</a>
+        <a href="day1-react-fundamentals-for-ios-devs.html">День 1</a>
+        <a href="day2-navigation-architecture-state.html">День 2</a>
+        <a href="day3-realtime-performance-practice.html">День 3</a>
+        <a href="assessment-guide.html" class="active">Assessment</a>
+    </div>
+
+    <div class="progress-bar"><div id="progress"></div></div>
+    <div class="slide-counter">Assessment Guide &bull; <span id="current">1</span> / <span id="total">18</span></div>
+
+    <!-- ======================= SLIDE 1: Title ======================= -->
+    <div class="slide slide-intro active">
+        <h2>Football Teams Explorer</h2>
+        <p style="font-size: 1.2em; color: #a5b4fc;">Onward Home Assessment: React Native (Expo)</p>
+        <p>Этот гайд связывает 3-дневный интенсив с реальным проектом.</p>
+        <p>Каждый слайд показывает: какой концепт из обучения → как он применяется в коде assessment.</p>
+        <div style="margin-top: 30px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
+            <span class="badge badge-day1">День 1: React Basics</span>
+            <span class="badge badge-day2">День 2: Architecture</span>
+            <span class="badge badge-day3">День 3: Performance</span>
+        </div>
+    </div>
+
+    <!-- ======================= SLIDE 2: Project Overview ======================= -->
+    <div class="slide slide-concept">
+        <h2>Что нужно построить</h2>
+        <p>React Native (Expo) приложение для просмотра и фильтрации 259 футбольных команд. Данные приходят с HackerRank API. Пользователь может искать команды, фильтровать по стоимости и титулам, а также вычислять расстояние до стадиона через GPS.</p>
+
+        <div class="file-tree">
+<span class="dir">clubsList/</span>
+  <span class="dir">app/</span>
+    <span class="file">_layout.tsx</span>       <span class="desc">-- root layout (Expo Router)</span>
+    <span class="file">index.tsx</span>        <span class="desc">-- main screen (207 строк)</span>
+  <span class="dir">components/</span>
+    <span class="file">TeamCard.tsx</span>     <span class="desc">-- карточка команды</span>
+    <span class="file">FilterBar.tsx</span>    <span class="desc">-- поиск + кнопка фильтров</span>
+    <span class="file">FilterModal.tsx</span>  <span class="desc">-- модальное окно фильтров</span>
+    <span class="file">EmptyState.tsx</span>   <span class="desc">-- пустой результат</span>
+    <span class="file">ErrorState.tsx</span>   <span class="desc">-- ошибка с retry</span>
+  <span class="dir">hooks/</span>
+    <span class="file">useTeams.ts</span>      <span class="desc">-- загрузка данных</span>
+    <span class="file">useFilters.ts</span>    <span class="desc">-- фильтрация + debounce</span>
+  <span class="dir">types/</span>
+    <span class="file">team.ts</span>          <span class="desc">-- TypeScript интерфейсы</span>
+  <span class="dir">utils/</span>
+    <span class="file">api.ts</span>           <span class="desc">-- fetch + geocoding</span>
+    <span class="file">distance.ts</span>      <span class="desc">-- haversine формула</span>
+  <span class="dir">constants/</span>
+    <span class="file">filters.ts</span>       <span class="desc">-- дефолты фильтров</span>
+        </div>
+
+        <div class="key-insight">
+            13 файлов, ~1270 строк кода. Никакого Redux/Zustand -- только React hooks. Это именно то, что оценивают: чистая работа с React примитивами.
+        </div>
+    </div>
+
+    <!-- ======================= SLIDE 3: Concept Map ======================= -->
+    <div class="slide slide-concept">
+        <h2>Карта концептов: Обучение → Assessment</h2>
+        <p>Каждый концепт из 3-дневного интенсива напрямую используется в проекте:</p>
+
+        <table class="mapping-table">
+            <thead>
+                <tr><th>Концепт из обучения</th><th>Где в assessment</th><th>День</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><code>useState</code></td><td>distances, filterModalVisible, loading, error</td><td><span class="badge badge-day1">1</span></td></tr>
+                <tr><td><code>useEffect</code></td><td>useTeams: загрузка при mount</td><td><span class="badge badge-day1">1</span></td></tr>
+                <tr><td><code>useCallback</code></td><td>handleDistancePress, renderItem, keyExtractor</td><td><span class="badge badge-day1">1</span></td></tr>
+                <tr><td><code>useMemo</code></td><td>useFilters: filteredTeams, activeFilterCount</td><td><span class="badge badge-day1">1</span></td></tr>
+                <tr><td><code>FlatList</code></td><td>основной список команд</td><td><span class="badge badge-day1">1</span></td></tr>
+                <tr><td>Custom Hooks</td><td>useTeams, useFilters</td><td><span class="badge badge-day1">1</span></td></tr>
+                <tr><td>TypeScript interfaces</td><td>Team, FilterState, DistanceResult, Props</td><td><span class="badge badge-day2">2</span></td></tr>
+                <tr><td>Expo Router</td><td>app/_layout.tsx, Stack navigation</td><td><span class="badge badge-day2">2</span></td></tr>
+                <tr><td>Project Structure</td><td>hooks/, components/, utils/, types/</td><td><span class="badge badge-day2">2</span></td></tr>
+                <tr><td>expo-location</td><td>handleDistancePress: GPS + permissions</td><td><span class="badge badge-day3">3</span></td></tr>
+                <tr><td>Performance</td><td>initialNumToRender, useCallback, useRef</td><td><span class="badge badge-day3">3</span></td></tr>
+                <tr><td>Error Handling</td><td>ErrorState, try/catch, loading states</td><td><span class="badge badge-day2">2</span></td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ======================= SLIDE 4: TypeScript Types ======================= -->
+    <div class="slide slide-code">
+        <h2>Шаг 1: TypeScript Interfaces</h2>
+        <p>Первое, что нужно сделать -- определить типы данных. В iOS это был бы Codable struct. В TypeScript -- interface.</p>
+        <span class="badge badge-day2">День 2: TypeScript patterns</span>
+
+        <div class="code-compare">
+            <div class="code-box swift">
+                <div class="code-header swift">Swift (Codable)</div>
+                <div class="code-content">struct Team: Codable {
+    let name: String
+    let league: String
+    let estimatedValue: String
+    let estimatedValueNumeric: Int
+    let numberOfLeagueTitlesWon: Int
+    let stadiumName: String
+    let stadiumCapacity: Int
+}</div>
+            </div>
+            <div class="code-box react">
+                <div class="code-header react">TypeScript (interface)</div>
+                <div class="code-content">export interface Team {
+  name: string;
+  league: string;
+  estimated_value: string;
+  estimated_value_numeric: number;
+  number_of_league_titles_won: number;
+  stadium_name: string;
+  stadium_capacity: number;
+  // ... 20+ полей от API
+}</div>
+            </div>
+        </div>
+
+        <div class="tip">
+            Все типы в одном файле <code>types/team.ts</code> -- Team, TeamsApiResponse, FilterState, NominatimResult, DistanceResult. Это чистая архитектура: типы отдельно от логики.
+        </div>
+    </div>
+
+    <!-- ======================= SLIDE 5: Data Fetching ======================= -->
+    <div class="slide slide-code">
+        <h2>Шаг 2: Загрузка данных (useTeams)</h2>
+        <p>Custom hook который делает то же, что URLSession + @Published в iOS. Загружает данные при mount, управляет loading/error/retry.</p>
+        <span class="badge badge-day1">День 1: useState + useEffect + Custom Hooks</span>
+
+        <div class="code-block">// hooks/useTeams.ts
+export function useTeams(): UseTeamsResult {
+  const [teams, setTeams] = useState&lt;Team[]&gt;([]);     // @State var teams: [Team] = []
+  const [loading, setLoading] = useState(true);        // @State var loading = true
+  const [error, setError] = useState&lt;string | null&gt;(null);
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const data = await fetchAllTeams();              // URLSession.shared.data(from:)
+      setTeams(data);
+    } catch (e) {
+      setError(e instanceof Error ? e.message : "Failed to load teams");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => { load(); }, [load]);                // .onAppear { load() }
+
+  return { teams, loading, error, retry: load };
+}</div>
+
+        <div class="key-insight">
+            Паттерн <strong>useCallback + useEffect</strong> -- стандартный способ загрузки данных в React. Хук useCallback мемоизирует load(), а useEffect вызывает его при mount (пустой массив зависимостей). Retry -- просто повторный вызов load().
+        </div>
+    </div>
+
+    <!-- ======================= SLIDE 6: API Layer ======================= -->
+    <div class="slide slide-code">
+        <h2>Шаг 3: API Layer (fetch + parallel)</h2>
+        <p>259 команд на 26 страницах. Стратегия: загрузить первую страницу, узнать total_pages, параллельно загрузить остальные.</p>
+        <span class="badge badge-day1">День 1: async/await</span>
+
+        <div class="code-block">// utils/api.ts
+export async function fetchAllTeams(): Promise&lt;Team[]&gt; {
+  const firstPage = await fetchTeamsPage(1);
+  const { total_pages, data } = firstPage;
+
+  if (total_pages &lt;= 1) return data;
+
+  // Параллельная загрузка всех страниц
+  const remaining = Array.from(
+    { length: total_pages - 1 },
+    (_, i) => fetchTeamsPage(i + 2)
+  );
+  const pages = await Promise.all(remaining);           // DispatchGroup / TaskGroup
+  const allTeams = [...data, ...pages.flatMap(p => p.data)];
+
+  return allTeams.sort(
+    (a, b) => b.estimated_value_numeric - a.estimated_value_numeric
+  );
+}</div>
+
+        <div class="tip">
+            <strong>Promise.all</strong> -- аналог Swift TaskGroup. Все 25 оставшихся страниц загружаются одновременно. В iOS ты бы использовал <code>async let</code> или <code>withTaskGroup</code>.
+        </div>
+    </div>
+
+    <!-- ======================= SLIDE 7: FlatList ======================= -->
+    <div class="slide slide-code">
+        <h2>Шаг 4: FlatList (основной список)</h2>
+        <p>Аналог UITableView/UICollectionView. Виртуализирует элементы -- рендерит только видимые.</p>
+        <span class="badge badge-day1">День 1: FlatList</span>
+
+        <div class="code-block">// app/index.tsx
+&lt;FlatList
+  data={filteredTeams}
+  renderItem={renderItem}              // cellForRowAt
+  keyExtractor={keyExtractor}          // reuseIdentifier
+  ListHeaderComponent={&lt;FilterBar /&gt;} // tableHeaderView
+  ListEmptyComponent={&lt;EmptyState /&gt;} // backgroundView при пустом списке
+  ListFooterComponent={...}            // tableFooterView
+  contentContainerStyle={styles.listContent}
+  initialNumToRender={10}              // prefetchDataSource
+  maxToRenderPerBatch={10}
+  keyboardDismissMode="on-drag"        // .scrollDismissesKeyboard
+/&gt;</div>
+
+        <div class="warning">
+            <strong>renderItem и keyExtractor обёрнуты в useCallback!</strong> Без мемоизации FlatList будет пересоздавать ячейки при каждом ре-рендере родителя. Это как если бы UITableView вызывал dequeueReusableCell каждый кадр.
+        </div>
+    </div>
+
+    <!-- ======================= SLIDE 8: Component Breakdown ======================= -->
+    <div class="slide slide-concept">
+        <h2>Шаг 5: Компоненты (TeamCard)</h2>
+        <p>Каждый компонент -- это View в SwiftUI. Props -- это @Binding. Callbacks -- это closures.</p>
+        <span class="badge badge-day1">День 1: Components + Props</span>
+
+        <div class="code-block">// components/TeamCard.tsx
+interface Props {
+  team: Team;                          // let team: Team
+  distanceResult?: DistanceResult;     // @Binding var distance: DistanceResult?
+  onDistancePress: () => void;         // var onTap: () -> Void
+}
+
+export function TeamCard({ team, distanceResult, onDistancePress }: Props) {
+  return (
+    &lt;View style={styles.card}&gt;
+      &lt;Text style={styles.name}&gt;{team.name}&lt;/Text&gt;
+      &lt;Text style={styles.league}&gt;{team.league}&lt;/Text&gt;
+
+      &lt;View style={styles.statsRow}&gt;
+        &lt;View style={styles.stat}&gt;
+          &lt;Text style={styles.statLabel}&gt;Value&lt;/Text&gt;
+          &lt;Text style={styles.statValue}&gt;{team.estimated_value}&lt;/Text&gt;
+        &lt;/View&gt;
+        {/* ... League Titles, Trophies */}
+      &lt;/View&gt;
+
+      &lt;Pressable onPress={onDistancePress}&gt;
+        {distanceResult?.loading
+          ? &lt;ActivityIndicator /&gt;
+          : &lt;Text&gt;Distance&lt;/Text&gt;}
+      &lt;/Pressable&gt;
+    &lt;/View&gt;
+  );
+}</div>
+
+        <div class="key-insight">
+            <strong>Accessibility встроена в каждый компонент:</strong> accessibilityRole="summary", accessibilityLabel с динамическим текстом. В iOS ты бы использовал .accessibilityLabel и .accessibilityTraits. В React Native -- props на View/Text/Pressable.
+        </div>
+    </div>
+
+    <!-- ======================= SLIDE 9: Filtering with useMemo ======================= -->
+    <div class="slide slide-code">
+        <h2>Шаг 6: Фильтрация (useFilters + useMemo)</h2>
+        <p>Клиентская фильтрация с debounce поиска. useMemo пересчитывает только когда меняются зависимости -- как @State + computed property.</p>
+        <span class="badge badge-day1">День 1: useMemo + useCallback</span>
+
+        <div class="code-block">// hooks/useFilters.ts
+export function useFilters(teams: Team[]): UseFiltersResult {
+  const [filters, setFilters] = useState&lt;FilterState&gt;(DEFAULT_FILTERS);
+  const [searchText, setSearchTextRaw] = useState("");
+  const debounceRef = useRef&lt;ReturnType&lt;typeof setTimeout&gt;&gt;();
+
+  // Debounced search (300ms)
+  const setSearchText = useCallback((text: string) => {
+    setSearchTextRaw(text);                      // мгновенно обновить TextInput
+    if (debounceRef.current) clearTimeout(debounceRef.current);
+    debounceRef.current = setTimeout(() => {
+      setFilters(prev => ({ ...prev, searchQuery: text }));
+    }, 300);                                     // отложить фильтрацию
+  }, []);
+
+  // Мемоизированная фильтрация -- пересчёт ТОЛЬКО при изменении teams или filters
+  const filteredTeams = useMemo(() => {
+    const query = filters.searchQuery.toLowerCase();
+    return teams.filter(team =>
+      team.name.toLowerCase().includes(query) &amp;&amp;
+      team.estimated_value_numeric >= filters.minValue &amp;&amp;
+      team.number_of_league_titles_won >= filters.minTitles
+    );
+  }, [teams, filters]);
+
+  return { filteredTeams, filters, searchText, ... };
+}</div>
+
+        <div class="tip">
+            <strong>Debounce = Combine's .debounce(for:)</strong>. Пользователь печатает -- TextInput обновляется мгновенно, но фильтрация срабатывает через 300ms после последнего нажатия. useRef хранит timeout ID между рендерами (не вызывая ре-рендер).
+        </div>
+    </div>
+
+    <!-- ======================= SLIDE 10: Filter Modal ======================= -->
+    <div class="slide slide-code">
+        <h2>Шаг 7: Filter Modal (Local State Pattern)</h2>
+        <p>Модальное окно с локальным состоянием. Изменения применяются только по нажатию "Apply" -- не при каждом тапе на chip.</p>
+        <span class="badge badge-day2">День 2: State Management</span>
+
+        <div class="code-block">// components/FilterModal.tsx
+export function FilterModal({ visible, onClose, minValue, minTitles, onApply }: Props) {
+  const [localValue, setLocalValue] = useState(minValue);
+  const [localTitles, setLocalTitles] = useState(minTitles);
+
+  const handleOpen = () => {
+    setLocalValue(minValue);      // Синхронизация при открытии
+    setLocalTitles(minTitles);
+  };
+
+  const handleApply = () => {
+    onApply(localValue, localTitles);  // Применяем только при нажатии Apply
+    onClose();
+  };
+
+  return (
+    &lt;Modal visible={visible} onShow={handleOpen}&gt;
+      {/* Value chips */}
+      {VALUE_STEPS.map((step, i) =&gt; (
+        &lt;Pressable onPress={() =&gt; setLocalValue(step)}
+          style={[styles.chip, localValue === step &amp;&amp; styles.chipActive]}&gt;
+          &lt;Text&gt;{VALUE_STEP_LABELS[i]}&lt;/Text&gt;
+        &lt;/Pressable&gt;
+      ))}
+      {/* Title stepper (- / value / +) */}
+      {/* Apply button */}
+    &lt;/Modal&gt;
+  );
+}</div>
+
+        <div class="key-insight">
+            <strong>Local state в модалке</strong> -- важный паттерн! Без него список пере-фильтровался бы при каждом тапе на chip. Это было бы медленно (259 элементов * 3 фильтра) и визуально дёрганым. В iOS аналог: sheet с @State внутри, .onAppear для синка.
+        </div>
+    </div>
+
+    <!-- ======================= SLIDE 11: Distance Calculation ======================= -->
+    <div class="slide slide-code">
+        <h2>Шаг 8: Геолокация (expo-location)</h2>
+        <p>По кнопке: запросить GPS разрешение → получить координаты → геокодировать стадион → посчитать расстояние.</p>
+        <span class="badge badge-day3">День 3: Location Services</span>
+
+        <div class="code-block">// app/index.tsx
+const userLocationRef = useRef&lt;{ lat: number; lon: number } | null&gt;(null);
+
+const handleDistancePress = useCallback(async (team: Team) => {
+  setDistances(prev => ({
+    ...prev,
+    [team.name]: { value: null, loading: true, error: null }
+  }));
+
+  // 1. Получить GPS (кэшируется в ref)
+  if (!userLocationRef.current) {
+    const { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== "granted") { /* set error */ return; }
+    const loc = await Location.getCurrentPositionAsync({});
+    userLocationRef.current = { lat: loc.coords.latitude, lon: loc.coords.longitude };
+  }
+
+  // 2. Геокодировать стадион (кэш в Map)
+  const coords = await geocodeStadium(team.stadium_name);
+
+  // 3. Посчитать расстояние (haversine)
+  const dist = haversine(
+    userLocationRef.current.lat, userLocationRef.current.lon,
+    coords.lat, coords.lon
+  );
+
+  setDistances(prev => ({
+    ...prev,
+    [team.name]: { value: dist, loading: false, error: null }
+  }));
+}, []);</div>
+
+        <div class="tip">
+            <strong>Три уровня кэширования:</strong> userLocationRef (GPS -- один запрос за сессию), geocodeCache (Map в api.ts -- один запрос на стадион), distances state (UI -- результат сохраняется). В iOS: CLLocationManager + NSCache.
+        </div>
+    </div>
+
+    <!-- ======================= SLIDE 12: Styling ======================= -->
+    <div class="slide slide-concept">
+        <h2>Шаг 9: StyleSheet (стилизация)</h2>
+        <p>React Native использует Flexbox по умолчанию (как UIStackView). StyleSheet.create -- аналог UIAppearance + оптимизация.</p>
+        <span class="badge badge-day1">День 1: React Native Basics</span>
+
+        <div class="code-compare">
+            <div class="code-box swift">
+                <div class="code-header swift">SwiftUI</div>
+                <div class="code-content">VStack {
+  Text(team.name)
+    .font(.headline)
+    .foregroundColor(.primary)
+  Text(team.league)
+    .font(.subheadline)
+    .foregroundColor(.secondary)
+}
+.padding()
+.background(Color.white)
+.cornerRadius(12)
+.shadow(radius: 4)</div>
+            </div>
+            <div class="code-box react">
+                <div class="code-header react">React Native</div>
+                <div class="code-content">const styles = StyleSheet.create({
+  card: {
+    backgroundColor: "#fff",
+    borderRadius: 12,
+    padding: 16,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,  // Android shadow
+  },
+  name: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#1a1a1a",
+  },
+});</div>
+            </div>
+        </div>
+
+        <div class="warning">
+            <strong>Нет CSS каскада!</strong> В React Native каждый компонент стилизуется отдельно. Нет наследования стилей (кроме color в Text). Нет классов, нет селекторов. Каждый View -- изолированный контейнер.
+        </div>
+    </div>
+
+    <!-- ======================= SLIDE 13: Accessibility ======================= -->
+    <div class="slide slide-concept">
+        <h2>Шаг 10: Accessibility</h2>
+        <p>Onward оценивает accessibility. В assessment каждый интерактивный элемент имеет роль и label.</p>
+
+        <div class="code-block">// TeamCard -- accessibilityRole + dynamic label
+&lt;View
+  accessibilityRole="summary"
+  accessibilityLabel={`${team.name}, valued at ${team.estimated_value}, ${team.number_of_league_titles_won} league titles`}
+&gt;
+
+// Distance button -- состояние меняет label
+&lt;Pressable
+  accessibilityRole="button"
+  accessibilityLabel={
+    distanceText
+      ? `${team.stadium_name} is ${distanceText} away`
+      : `Calculate distance to ${team.stadium_name}`
+  }
+  disabled={distanceResult?.loading}
+&gt;
+
+// FilterModal -- chips с accessibilityState
+&lt;Pressable
+  accessibilityRole="button"
+  accessibilityState={{ selected: localValue === step }}
+  accessibilityLabel={`Minimum value ${VALUE_STEP_LABELS[i]}`}
+&gt;</div>
+
+        <div class="key-insight">
+            <strong>iOS аналоги:</strong> accessibilityRole = .accessibilityTraits, accessibilityLabel = .accessibilityLabel, accessibilityState = .isSelected. Минимум 44pt tap targets (minHeight: 44 / minWidth: 44 в StyleSheet). WCAG AA контраст на всех текстах.
+        </div>
+    </div>
+
+    <!-- ======================= SLIDE 14: Error Handling ======================= -->
+    <div class="slide slide-concept">
+        <h2>Шаг 11: Error & Empty States</h2>
+        <p>Три состояния экрана: Loading → Error | Content (Empty | List). Каждое должно быть красивым и информативным.</p>
+        <span class="badge badge-day2">День 2: Error Boundaries</span>
+
+        <div class="code-block">// app/index.tsx -- три ветки render
+if (loading) {
+  return (
+    &lt;View style={styles.center}&gt;
+      &lt;ActivityIndicator size="large" color="#4A90D9" /&gt;
+      &lt;Text&gt;Loading teams...&lt;/Text&gt;
+    &lt;/View&gt;
+  );
+}
+
+if (error) {
+  return &lt;ErrorState message={error} onRetry={retry} /&gt;;
+}
+
+return (
+  &lt;FlatList
+    ListEmptyComponent={
+      &lt;EmptyState
+        hasFilters={activeFilterCount &gt; 0}
+        onReset={resetFilters}
+      /&gt;
+    }
+  /&gt;
+);</div>
+
+        <div class="tip">
+            EmptyState умный: если фильтры активны -- показывает "Try adjusting your search" + кнопку Reset. Если данных нет вообще -- "Check your connection". Это production-level UX.
+        </div>
+    </div>
+
+    <!-- ======================= SLIDE 15: Performance ======================= -->
+    <div class="slide slide-concept">
+        <h2>Шаг 12: Performance Decisions</h2>
+        <p>Каждое решение в assessment мотивировано производительностью:</p>
+        <span class="badge badge-day3">День 3: Performance</span>
+
+        <table class="mapping-table">
+            <thead>
+                <tr><th>Решение</th><th>Почему</th><th>Аналог iOS</th></tr>
+            </thead>
+            <tbody>
+                <tr><td><code>useCallback</code> на renderItem</td><td>FlatList не пересоздаёт ячейки</td><td>dequeueReusableCell</td></tr>
+                <tr><td><code>useMemo</code> на filteredTeams</td><td>Фильтрация только при изменении данных</td><td>computed + Equatable</td></tr>
+                <tr><td><code>useRef</code> для GPS</td><td>Не вызывает ре-рендер при кэшировании</td><td>private var (не @State)</td></tr>
+                <tr><td>debounce 300ms</td><td>Не фильтровать при каждом нажатии клавиши</td><td>.debounce(for: 0.3)</td></tr>
+                <tr><td>initialNumToRender=10</td><td>Быстрый первый кадр</td><td>prefetchDataSource</td></tr>
+                <tr><td>Local state в модалке</td><td>Список не перерисовывается при тапах на chips</td><td>@State в sheet</td></tr>
+                <tr><td>geocodeCache (Map)</td><td>Не запрашивать стадион повторно</td><td>NSCache / URLCache</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ======================= SLIDE 16: Architecture Decisions ======================= -->
+    <div class="slide slide-concept">
+        <h2>Шаг 13: Trade-offs (что спросят на review)</h2>
+        <p>Assessment оценивает не только код, но и мышление. Будь готов объяснить:</p>
+
+        <div class="tip">
+            <strong>"Почему fetch all upfront, а не pagination?"</strong><br>
+            259 команд = ~100KB. API не поддерживает серверную фильтрацию. При клиентской фильтрации нужны все данные. Pagination добавила бы сложность без выгоды. При 10K+ элементов -- да, нужен серверный фильтр.
+        </div>
+
+        <div class="tip">
+            <strong>"Почему chips, а не slider для value?"</strong><br>
+            Диапазон $3M-$2.5B нелинейный. На линейном слайдере 90% значений заняли бы 2% полоски. Chips интуитивнее и accessible (44pt targets, VoiceOver friendly).
+        </div>
+
+        <div class="tip">
+            <strong>"Почему нет Redux/Zustand?"</strong><br>
+            Один экран, 3 фильтра, один массив. useState + useMemo достаточно. Добавлять state management library -- over-engineering. Показывает, что ты знаешь, когда НЕ использовать инструмент.
+        </div>
+
+        <div class="tip">
+            <strong>"Почему distance on-demand?"</strong><br>
+            Geocoding 259 стадионов при mount: ~4 минуты при 1 req/sec (Nominatim policy). Плохой UX. Per-button-press + cache -- правильный баланс.
+        </div>
+    </div>
+
+    <!-- ======================= SLIDE 17: Live Coding Checklist ======================= -->
+    <div class="slide slide-exercise">
+        <h2>Live Coding Checklist</h2>
+        <p>Если assessment нужно делать live, вот порядок действий:</p>
+
+        <div class="code-block" style="border-left-color: #f59e0b;">1.  npx create-expo-app clubsList --template blank-typescript
+2.  Определи types/team.ts (скопируй с API response)
+3.  utils/api.ts: fetchAllTeams() с Promise.all
+4.  hooks/useTeams.ts: useState + useEffect + retry
+5.  components/TeamCard.tsx: карточка с stats row
+6.  app/index.tsx: FlatList + loading/error states
+7.  --- CHECKPOINT: список отображается ---
+8.  components/FilterBar.tsx: TextInput + button
+9.  hooks/useFilters.ts: debounce + useMemo
+10. components/FilterModal.tsx: chips + stepper + local state
+11. --- CHECKPOINT: фильтрация работает ---
+12. utils/distance.ts: haversine
+13. expo-location: permissions + geocoding
+14. Distance button в TeamCard
+15. --- CHECKPOINT: distance работает ---
+16. EmptyState + ErrorState
+17. Accessibility labels
+18. Polish: styles, shadows, responsive</div>
+
+        <div class="warning">
+            <strong>Timing:</strong> Шаги 1-6 = ~20 мин (core). Шаги 7-10 = ~15 мин (filtering). Шаги 11-14 = ~10 мин (distance). Шаги 15-18 = ~10 мин (polish). Итого ~55 минут. Оставь 5 мин на тестирование.
+        </div>
+    </div>
+
+    <!-- ======================= SLIDE 18: Summary ======================= -->
+    <div class="slide slide-intro">
+        <h2>Ready to Ship</h2>
+        <p style="font-size: 1.1em;">Ты знаешь каждый паттерн, каждый hook, каждое архитектурное решение.<br>Всё, что нужно -- это писать код быстро и уверенно.</p>
+
+        <div style="margin-top: 30px; text-align: left; max-width: 600px;">
+            <p><span class="badge badge-day1">День 1</span> useState, useEffect, useCallback, useMemo, FlatList, Custom Hooks</p>
+            <p><span class="badge badge-day2">День 2</span> Expo Router, TypeScript, Error Handling, Architecture, Project Structure</p>
+            <p><span class="badge badge-day3">День 3</span> expo-location, Performance, Caching, Live Coding Strategy</p>
+        </div>
+
+        <div class="key-insight" style="margin-top: 30px; text-align: center;">
+            13 файлов. 1270 строк. Zero external state management.<br>
+            Покажи, что Senior iOS dev может писать clean React Native.
+        </div>
+    </div>
+
+    <!-- Controls -->
+    <div class="controls">
+        <button id="btnPrev" onclick="prev()">← Назад</button>
+        <button id="btnNext" onclick="next()">Далее →</button>
+    </div>
+
+    <script>
+        var slides = document.querySelectorAll('.slide');
+        var total = slides.length;
+        var current = 0;
+        document.getElementById('total').textContent = total;
+
+        var prevPage = 'day3-realtime-performance-practice.html';
+        var nextPage = 'index.html';
+
+        function show(n) {
+            slides[current].classList.remove('active');
+            current = (n + total) % total;
+            slides[current].classList.add('active');
+            document.getElementById('current').textContent = current + 1;
+            document.getElementById('progress').style.width = ((current + 1) / total * 100) + '%';
+            document.getElementById('btnPrev').textContent = current <= 0 ? '← День 3' : '← Назад';
+            document.getElementById('btnNext').textContent = current >= total - 1 ? 'Главная →' : 'Далее →';
+        }
+        function next() { if (current >= total - 1) { location.href = nextPage; } else { show(current + 1); } }
+        function prev() { if (current <= 0) { location.href = prevPage; } else { show(current - 1); } }
+        show(0);
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); next(); }
+            if (e.key === 'ArrowLeft') { e.preventDefault(); prev(); }
+        });
+
+        // Syntax highlighting
+        (function() {
+            function hl(raw, lang) {
+                var saved = [];
+                function sv(h) { saved.push(h); return '\x01s' + (saved.length - 1) + '\x01'; }
+                var s = raw.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                s = s.replace(/\/\/.*|\/\*[\s\S]*?\*\/|"(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|`(?:[^`\\]|\\.)*`/g, function(m) {
+                    if (m[0] === '/') return sv('<span class="hl-c">' + m + '</span>');
+                    return sv('<span class="hl-s">' + m + '</span>');
+                });
+                if (lang === 'swift') s = s.replace(/@\w+/g, function(m) { return sv('<span class="hl-d">' + m + '</span>'); });
+                var kw = lang === 'swift'
+                    ? 'struct|class|func|var|let|return|if|else|for|in|import|protocol|enum|case|switch|guard|throw|throws|try|catch|async|await|some|where|extension|typealias|init|self|true|false|nil|private|public|static|override|mutating|weak|lazy|do'
+                    : 'const|let|var|function|return|if|else|for|of|in|import|export|from|default|class|extends|new|async|await|throw|try|catch|typeof|interface|type|enum|true|false|null|undefined|this|void|switch|case|break';
+                s = s.replace(new RegExp('\\b(' + kw + ')\\b', 'g'), '<span class="hl-k">$1</span>');
+                if (lang !== 'swift') s = s.replace(/(&lt;\/?)([\w.]+)/g, function(_, pre, tag) { return pre + sv('<span class="hl-t">' + tag + '</span>'); });
+                s = s.replace(/\b(\d+\.?\d*)\b/g, '<span class="hl-n">$1</span>');
+                s = s.replace(/\b([A-Z][a-zA-Z0-9]+)\b/g, '<span class="hl-t">$1</span>');
+                s = s.replace(/\x01s(\d+)\x01/g, function(_, i) { return saved[+i]; });
+                return s;
+            }
+            document.querySelectorAll('.code-content').forEach(function(el) {
+                var box = el.closest('.code-box');
+                var lang = box && box.classList.contains('swift') ? 'swift' : 'js';
+                el.innerHTML = hl(el.textContent, lang);
+            });
+            document.querySelectorAll('.code-block').forEach(function(el) {
+                el.innerHTML = hl(el.textContent, 'js');
+            });
+        })();
+    </script>
+</body>
+</html>
