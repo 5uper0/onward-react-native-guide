@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Swift → React Native: 3-дневный интенсив</title>
+    <title>Onward Rides: Knowledge Base & Interview Prep</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
@@ -12,18 +12,8 @@
             min-height: 100vh;
             color: #e2e8f0;
         }
-        
-        .container {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 40px 20px;
-        }
-        
-        header {
-            text-align: center;
-            margin-bottom: 50px;
-        }
-        
+        .container { max-width: 1000px; margin: 0 auto; padding: 40px 20px; }
+        header { text-align: center; margin-bottom: 50px; }
         h1 {
             font-size: 2.5em;
             background: linear-gradient(135deg, #60a5fa, #a78bfa);
@@ -31,14 +21,7 @@
             -webkit-text-fill-color: transparent;
             margin-bottom: 15px;
         }
-        
-        .subtitle {
-            font-size: 1.2em;
-            color: #94a3b8;
-            max-width: 600px;
-            margin: 0 auto;
-        }
-        
+        .subtitle { font-size: 1.2em; color: #94a3b8; max-width: 600px; margin: 0 auto; }
         .badge {
             display: inline-block;
             background: rgba(168, 85, 247, 0.2);
@@ -48,13 +31,52 @@
             font-size: 0.9em;
             margin-top: 15px;
         }
-        
-        .days-grid {
-            display: grid;
-            gap: 30px;
-            margin-top: 40px;
+
+        /* Quick action bar */
+        .quick-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-top: 25px;
+            flex-wrap: wrap;
         }
-        
+        .quick-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 24px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1em;
+            transition: all 0.2s;
+        }
+        .quick-action.primary {
+            background: linear-gradient(135deg, #f59e0b, #ef4444);
+            color: white;
+            font-size: 1.1em;
+        }
+        .quick-action.primary:hover { transform: scale(1.05); box-shadow: 0 10px 30px rgba(245, 158, 11, 0.3); }
+        .quick-action.secondary {
+            background: rgba(59, 130, 246, 0.2);
+            color: #93c5fd;
+            border: 1px solid rgba(59, 130, 246, 0.3);
+        }
+        .quick-action.secondary:hover { background: rgba(59, 130, 246, 0.3); }
+
+        /* Section headers */
+        .section-header {
+            color: #94a3b8;
+            font-size: 0.9em;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin: 50px 0 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+        }
+        .section-header:first-of-type { margin-top: 40px; }
+
+        .days-grid { display: grid; gap: 30px; }
         .day-card {
             background: rgba(30, 41, 59, 0.8);
             border-radius: 16px;
@@ -62,194 +84,97 @@
             border: 1px solid rgba(148, 163, 184, 0.1);
             transition: all 0.3s ease;
         }
-        
         .day-card:hover {
             transform: translateY(-4px);
             border-color: rgba(96, 165, 250, 0.3);
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
         }
-        
-        .day-header {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-        
+        .day-header { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
         .day-number {
             background: linear-gradient(135deg, #3b82f6, #8b5cf6);
             color: white;
-            width: 50px;
-            height: 50px;
+            width: 50px; height: 50px;
             border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5em;
-            font-weight: bold;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.5em; font-weight: bold;
         }
-        
-        .day-title {
-            flex: 1;
-        }
-        
-        .day-title h2 {
-            font-size: 1.4em;
-            color: #f1f5f9;
-            margin-bottom: 5px;
-        }
-        
-        .day-title span {
-            color: #94a3b8;
-            font-size: 0.9em;
-        }
-        
-        .topics {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 20px;
-        }
-        
-        .topic {
-            background: rgba(59, 130, 246, 0.15);
-            color: #93c5fd;
-            padding: 6px 14px;
-            border-radius: 6px;
-            font-size: 0.85em;
-        }
-        
-        .topic.swift {
-            background: rgba(249, 115, 22, 0.15);
-            color: #fdba74;
-        }
-        
-        .exercises {
-            color: #94a3b8;
-            font-size: 0.95em;
-            margin-bottom: 20px;
-        }
-        
-        .exercises strong {
-            color: #22c55e;
-        }
-        
+        .day-title { flex: 1; }
+        .day-title h2 { font-size: 1.4em; color: #f1f5f9; margin-bottom: 5px; }
+        .day-title span { color: #94a3b8; font-size: 0.9em; }
+        .topics { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 20px; }
+        .topic { background: rgba(59, 130, 246, 0.15); color: #93c5fd; padding: 6px 14px; border-radius: 6px; font-size: 0.85em; }
+        .topic.swift { background: rgba(249, 115, 22, 0.15); color: #fdba74; }
+        .exercises { color: #94a3b8; font-size: 0.95em; margin-bottom: 20px; }
+        .exercises strong { color: #22c55e; }
         .start-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
+            display: inline-flex; align-items: center; gap: 8px;
             background: linear-gradient(135deg, #3b82f6, #8b5cf6);
-            color: white;
-            padding: 12px 24px;
-            border-radius: 8px;
-            text-decoration: none;
-            font-weight: 600;
+            color: white; padding: 12px 24px; border-radius: 8px;
+            text-decoration: none; font-weight: 600; transition: all 0.2s;
+        }
+        .start-btn:hover { transform: scale(1.05); box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3); }
+
+        /* Reference cards grid */
+        .ref-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        .ref-card {
+            background: rgba(30, 41, 59, 0.6);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid rgba(148, 163, 184, 0.1);
             transition: all 0.2s;
+            text-decoration: none;
+            color: inherit;
+            display: block;
         }
-        
-        .start-btn:hover {
-            transform: scale(1.05);
-            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.3);
+        .ref-card:hover {
+            border-color: rgba(96, 165, 250, 0.3);
+            transform: translateY(-2px);
         }
-        
+        .ref-card h3 { font-size: 1.1em; color: #f1f5f9; margin-bottom: 8px; }
+        .ref-card p { color: #94a3b8; font-size: 0.85em; line-height: 1.5; }
+        .ref-card .format { display: inline-block; background: rgba(100, 116, 139, 0.2); color: #94a3b8; padding: 2px 8px; border-radius: 4px; font-size: 0.75em; margin-top: 10px; }
+
         .cheatsheet {
             background: rgba(34, 197, 94, 0.1);
             border: 1px solid rgba(34, 197, 94, 0.3);
-            border-radius: 12px;
-            padding: 25px;
-            margin-top: 40px;
+            border-radius: 12px; padding: 25px; margin-top: 40px;
         }
-        
-        .cheatsheet h3 {
-            color: #4ade80;
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-        
-        .mapping-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px 30px;
-        }
-        
-        .mapping {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-family: "SF Mono", Menlo, monospace;
-            font-size: 0.85em;
-        }
-        
-        .mapping .swift {
-            color: #fdba74;
-        }
-        
-        .mapping .arrow {
-            color: #4ade80;
-        }
-        
-        .mapping .react {
-            color: #93c5fd;
-        }
-        
-        .old-lessons {
-            margin-top: 50px;
-            padding-top: 30px;
-            border-top: 1px solid rgba(148, 163, 184, 0.1);
-        }
-        
-        .old-lessons h3 {
-            color: #64748b;
-            font-size: 1em;
-            margin-bottom: 15px;
-        }
-        
-        .old-lessons ul {
-            list-style: none;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-        
-        .old-lessons a {
-            color: #64748b;
-            text-decoration: none;
-            font-size: 0.85em;
-            padding: 6px 12px;
-            border-radius: 6px;
-            background: rgba(100, 116, 139, 0.1);
-            transition: all 0.2s;
-        }
-        
-        .old-lessons a:hover {
-            background: rgba(100, 116, 139, 0.2);
-            color: #94a3b8;
-        }
-        
-        footer {
-            text-align: center;
-            margin-top: 60px;
-            color: #64748b;
-            font-size: 0.9em;
-        }
-        
+        .cheatsheet h3 { color: #4ade80; margin-bottom: 15px; display: flex; align-items: center; gap: 10px; }
+        .mapping-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 30px; }
+        .mapping { display: flex; align-items: center; gap: 10px; font-family: "SF Mono", Menlo, monospace; font-size: 0.85em; }
+        .mapping .swift { color: #fdba74; }
+        .mapping .arrow { color: #4ade80; }
+        .mapping .react { color: #93c5fd; }
+
+        footer { text-align: center; margin-top: 60px; color: #64748b; font-size: 0.9em; }
+
         @media (max-width: 600px) {
             h1 { font-size: 1.8em; }
             .mapping-grid { grid-template-columns: 1fr; }
             .day-header { flex-direction: column; text-align: center; }
+            .quick-actions { flex-direction: column; align-items: center; }
+            .ref-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <header>
-            <h1>🚀 Swift → React Native</h1>
-            <p class="subtitle">3-дневный интенсив для iOS разработчика с 10+ лет опыта. Подготовка к live coding интервью в Onward.</p>
-            <span class="badge">⏱️ ~12 часов материала</span>
+            <h1>Onward Rides — Knowledge Base</h1>
+            <p class="subtitle">Все материалы для подготовки к интервью: React Native интенсив, iOS deep dives, code walkthroughs и cheatsheets.</p>
+            <span class="badge">93 слайда + 6 справочников</span>
+
+            <div class="quick-actions">
+                <a href="complete-guide.html" class="quick-action primary">Complete Guide (93 slides)</a>
+                <a href="code-walkthrough.html" class="quick-action secondary">Code Walkthrough</a>
+            </div>
         </header>
         
+        <div class="section-header">React Native Intensive — 3 Days</div>
         <div class="days-grid">
             <!-- Day 1 -->
             <div class="day-card">
@@ -374,6 +299,51 @@
             </div>
         </div>
 
+        <!-- Reference Materials -->
+        <div class="section-header">Reference Materials</div>
+        <div class="ref-grid">
+            <a href="INTERVIEW-PREP.md" class="ref-card">
+                <h3>Interview Prep Guide</h3>
+                <p>Comprehensive preparation: React Native concepts, system design, behavioral questions, and Onward-specific scenarios.</p>
+                <span class="format">Markdown — 33KB</span>
+            </a>
+            <a href="CODE-WALKTHROUGH.md" class="ref-card">
+                <h3>Code Walkthrough</h3>
+                <p>Detailed walkthrough of the Football Teams Explorer codebase — architecture, hooks, components, and patterns.</p>
+                <span class="format">Markdown — 45KB</span>
+            </a>
+            <a href="LIVE-CODING-CHEATSHEET.md" class="ref-card">
+                <h3>Live Coding Cheatsheet</h3>
+                <p>Quick reference for live coding sessions: common patterns, gotchas, time management tips.</p>
+                <span class="format">Markdown — 7KB</span>
+            </a>
+            <a href="code-walkthrough.html" class="ref-card">
+                <h3>Code Walkthrough (Interactive)</h3>
+                <p>HTML version with syntax highlighting — browse the actual Football Teams Explorer code with annotations.</p>
+                <span class="format">HTML</span>
+            </a>
+        </div>
+
+        <!-- iOS Knowledge Base -->
+        <div class="section-header">iOS Deep Dives</div>
+        <div class="ref-grid">
+            <a href="swift-concurrency-unchecked.md" class="ref-card">
+                <h3>Swift Concurrency & @unchecked Sendable</h3>
+                <p>Deep dive into Swift's concurrency model, Sendable protocol, actor isolation, and when @unchecked is acceptable.</p>
+                <span class="format">Markdown</span>
+            </a>
+            <a href="swift-macros.md" class="ref-card">
+                <h3>Swift Macros</h3>
+                <p>Swift 5.9+ macro system: freestanding macros, attached macros, macro plugins, and practical use cases.</p>
+                <span class="format">Markdown</span>
+            </a>
+            <a href="clean-architecture.md" class="ref-card">
+                <h3>Clean Architecture for iOS</h3>
+                <p>VIPER, VIP, Clean Swift patterns — layered architecture, dependency injection, and testability.</p>
+                <span class="format">Markdown</span>
+            </a>
+        </div>
+
         <!-- Quick Reference -->
         <div class="cheatsheet">
             <h3>📋 Quick Reference: Swift → React Native</h3>
@@ -422,7 +392,7 @@
         </div>
         
         <footer>
-            <p>Создано для Олега • Onward Rides Interview Prep • Март 2026</p>
+            <p>Onward Rides Interview Prep • 93 slides + 6 references • Март 2026</p>
         </footer>
     </div>
 </body>
