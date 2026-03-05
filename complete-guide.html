@@ -5761,9 +5761,9 @@ export const TeamCard = memo(TeamCardComponent);
 // name, league, value, statsRow, stat, statValue, statLabel, footer, stadium</div>
     </div>
 
-    <!-- ======================= INTERVIEW SLIDE 8: Option A [id].tsx + Option B ======================= -->
+    <!-- ======================= INTERVIEW SLIDE 8: Option A [id].tsx ======================= -->
     <div class="slide slide-interview" data-section="4" data-section-name="Interview">
-        <h2>Option A: [id].tsx + Option B: Pagination</h2>
+        <h2>Option A: Detail Screen — <code>app/team/[id].tsx</code></h2>
         <span class="badge badge-critical">Live Coding</span>
 
         <div class="code-block">// app/team/[id].tsx — CREATE (mkdir app/team/ first)
@@ -5795,8 +5795,13 @@ export default function TeamDetailScreen() {
   );
 }
 // Helper components: StatBox({ label, value }), InfoRow({ label, value })</div>
+    </div>
 
-        <p style="margin-top: 20px;"><strong>Option B: Pagination</strong> — key changes to <code>useTeams.ts</code></p>
+    <!-- ======================= INTERVIEW SLIDE 9: Option B Pagination ======================= -->
+    <div class="slide slide-interview" data-section="4" data-section-name="Interview">
+        <h2>Option B: Pagination — Infinite Scroll</h2>
+        <span class="badge badge-critical">Live Coding</span>
+        <p>Key changes to <code>useTeams.ts</code></p>
 
         <div class="code-block">// useTeams.ts — replace fetch-all with page-by-page
 const [hasMore, setHasMore] = useState(true);
@@ -5828,7 +5833,7 @@ const loadMore = useCallback(async () =&gt; {
 // ListFooterComponent={isLoadingMore ? &lt;ActivityIndicator /&gt; : null}</div>
     </div>
 
-    <!-- ======================= INTERVIEW SLIDE 9: Option C Favorites ======================= -->
+    <!-- ======================= INTERVIEW SLIDE 10: Option C Favorites ======================= -->
     <div class="slide slide-interview" data-section="4" data-section-name="Interview">
         <h2>Option C: Favorites — Full Code</h2>
         <span class="badge badge-critical">Live Coding</span>
@@ -5894,7 +5899,7 @@ export default function RootLayout() {
 // npm install: npx expo install @react-native-async-storage/async-storage</div>
     </div>
 
-    <!-- ======================= INTERVIEW SLIDE 10: Backend + Edge Cases + Outro ======================= -->
+    <!-- ======================= INTERVIEW SLIDE 11: Backend + Edge Cases + Outro ======================= -->
     <div class="slide slide-interview" data-section="4" data-section-name="Interview">
         <h2>Backend/API + Edge Cases + Outro</h2>
         <span class="badge badge-interview">Answers</span> <span class="badge badge-arch">Architecture</span>
