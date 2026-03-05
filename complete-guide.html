@@ -317,18 +317,77 @@
         }
         .debug-table th { background: rgba(239, 68, 68, 0.15); color: #fca5a5; font-weight: 600; }
         .debug-table td code { background: rgba(30, 41, 59, 0.8); padding: 2px 6px; border-radius: 4px; font-size: 0.9em; }
+
+        /* Quick slide picker overlay */
+        .slide-picker {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(8px);
+            z-index: 200;
+            padding: 60px 30px 30px;
+            overflow-y: auto;
+        }
+        .slide-picker.visible { display: block; }
+        .slide-picker h3 { color: #93c5fd; margin-bottom: 12px; font-size: 1.1em; }
+        .slide-picker .picker-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 8px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .slide-picker .picker-item {
+            background: rgba(30, 41, 59, 0.8);
+            border: 1px solid rgba(148,163,184,0.15);
+            border-radius: 8px;
+            padding: 10px 14px;
+            cursor: pointer;
+            transition: all 0.15s;
+            color: #e2e8f0;
+            font-size: 0.85em;
+            line-height: 1.4;
+        }
+        .slide-picker .picker-item:hover { background: rgba(59,130,246,0.3); border-color: #3b82f6; }
+        .slide-picker .picker-item.current { background: rgba(59,130,246,0.4); border-color: #60a5fa; }
+        .slide-picker .picker-item .picker-num { color: #64748b; font-size: 0.8em; margin-right: 6px; }
+        .slide-picker .picker-close {
+            position: fixed; top: 15px; right: 20px;
+            background: rgba(239,68,68,0.3); color: #fca5a5;
+            border: none; border-radius: 20px; padding: 8px 16px;
+            cursor: pointer; font-size: 0.9em; z-index: 201;
+        }
+        .slide-picker .picker-hint {
+            position: fixed; top: 15px; left: 20px;
+            color: #64748b; font-size: 0.8em; z-index: 201;
+        }
+        .slide-picker .section-group { margin-bottom: 20px; }
+
+        /* Keyboard hints in section nav */
+        .section-nav button .key-hint {
+            display: inline-block;
+            background: rgba(255,255,255,0.15);
+            color: #94a3b8;
+            font-size: 0.7em;
+            padding: 1px 5px;
+            border-radius: 3px;
+            margin-left: 4px;
+            vertical-align: middle;
+        }
     </style>
 </head>
 <body>
     <div class="progress-bar" id="progress"></div>
     <div class="section-nav" id="sectionNav">
-        <button class="active" onclick="goToSection(0)" title="React Fundamentals (25 slides)">День 1</button>
-        <button onclick="goToSection(1)" title="Navigation + State (26 slides)">День 2</button>
-        <button onclick="goToSection(2)" title="Performance + Practice (24 slides)">День 3</button>
-        <button onclick="goToSection(3)" title="Football Teams Explorer (18 slides)">Assessment</button>
-        <button onclick="goToSection(4)" title="Interview Prep (10 slides)">Interview</button>
+        <button class="active" onclick="goToSection(0)" title="React Fundamentals (25 slides)">День 1 <span class="key-hint">1</span></button>
+        <button onclick="goToSection(1)" title="Navigation + State (26 slides)">День 2 <span class="key-hint">2</span></button>
+        <button onclick="goToSection(2)" title="Performance + Practice (24 slides)">День 3 <span class="key-hint">3</span></button>
+        <button onclick="goToSection(3)" title="Football Teams Explorer (18 slides)">Assessment <span class="key-hint">4</span></button>
+        <button onclick="goToSection(4)" title="Interview Prep (10 slides)">Interview <span class="key-hint">5</span></button>
     </div>
-    <div class="slide-counter"><span id="sectionLabel">День 1</span> • <span id="current">1</span> / <span id="total">25</span></div>
+    <div class="slide-counter" onclick="togglePicker()" style="cursor:pointer;" title="Click or press L to browse slides"><span id="sectionLabel">День 1</span> • <span id="current">1</span> / <span id="total">25</span></div>
+    <div class="slide-picker" id="slidePicker"></div>
 
     <!-- ==================== SECTION: День 1 ==================== -->
     <div class="slide slide-intro active" data-section="0" data-section-name="День 1">
@@ -5943,6 +6002,9 @@ export default function RootLayout() {
             } else {
                 document.getElementById('btnNext').textContent = 'Далее →';
             }
+
+            // Save position to URL hash
+            history.replaceState(null, '', '#s=' + currentSection + '.' + localIdx);
         }
 
         function next() {
@@ -5972,9 +6034,86 @@ export default function RootLayout() {
                 : 'Показать решение';
         }
 
+        // Slide picker overlay
+        function getSlideTitle(slide) {
+            const h = slide.querySelector('h2') || slide.querySelector('h1');
+            return h ? h.textContent.trim() : 'Slide';
+        }
+
+        function buildPicker() {
+            const picker = document.getElementById('slidePicker');
+            let html = '<span class="picker-hint">Press L or Esc to close · Click any slide to jump</span>';
+            html += '<button class="picker-close" onclick="closePicker()">Close (Esc)</button>';
+            sections.forEach((sec, si) => {
+                html += '<div class="section-group"><h3>' + (si + 1) + '. ' + sec.name + ' (' + sec.slides.length + ' slides)</h3><div class="picker-grid">';
+                sec.slides.forEach((globalIdx, localIdx) => {
+                    const title = getSlideTitle(allSlides[globalIdx]);
+                    const isCurrent = globalIdx === currentSlide ? ' current' : '';
+                    html += '<div class="picker-item' + isCurrent + '" onclick="jumpFromPicker(' + globalIdx + ')">';
+                    html += '<span class="picker-num">' + (localIdx + 1) + '.</span>' + title + '</div>';
+                });
+                html += '</div></div>';
+            });
+            picker.innerHTML = html;
+        }
+
+        function togglePicker() {
+            const picker = document.getElementById('slidePicker');
+            if (picker.classList.contains('visible')) {
+                closePicker();
+            } else {
+                buildPicker();
+                picker.classList.add('visible');
+            }
+        }
+
+        function closePicker() {
+            document.getElementById('slidePicker').classList.remove('visible');
+        }
+
+        function jumpFromPicker(globalIdx) {
+            closePicker();
+            show(globalIdx);
+        }
+
+        // Restore position from URL hash
+        function restoreFromHash() {
+            const hash = location.hash;
+            if (!hash || !hash.startsWith('#s=')) return false;
+            const parts = hash.substring(3).split('.');
+            const secIdx = parseInt(parts[0]);
+            const localIdx = parseInt(parts[1] || 0);
+            if (secIdx >= 0 && secIdx < sections.length) {
+                const sec = sections[secIdx];
+                const slideIdx = localIdx < sec.slides.length ? sec.slides[localIdx] : sec.start;
+                show(slideIdx);
+                return true;
+            }
+            return false;
+        }
+
         document.addEventListener('keydown', (e) => {
+            const picker = document.getElementById('slidePicker');
+            const pickerOpen = picker.classList.contains('visible');
+
+            // Escape closes picker
+            if (e.key === 'Escape' && pickerOpen) { closePicker(); return; }
+
+            // Don't handle other keys when picker is open
+            if (pickerOpen) return;
+
+            // Arrow/space navigation
             if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); next(); }
             if (e.key === 'ArrowLeft') { e.preventDefault(); prev(); }
+
+            // Number keys 1-5 jump to sections
+            if (e.key >= '1' && e.key <= '5') {
+                const secIdx = parseInt(e.key) - 1;
+                if (secIdx < sections.length) { e.preventDefault(); goToSection(secIdx); }
+            }
+
+            // L toggles slide picker
+            if (e.key === 'l' || e.key === 'L') { e.preventDefault(); togglePicker(); }
         });
 
         // Syntax highlighting
@@ -6015,8 +6154,8 @@ export default function RootLayout() {
             });
         })();
 
-        // Initialize first slide
-        show(0);
+        // Initialize — restore from hash or start at slide 0
+        if (!restoreFromHash()) show(0);
     </script>
 </body>
 </html>
