@@ -12,8 +12,8 @@
             color: #e2e8f0;
             line-height: 1.6;
         }
-        .slide { display: none; min-height: 100vh; padding: 40px; }
-        .slide.active { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+        .slide { display: none; height: 100vh; padding: 40px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+        .slide.active { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; }
         
         /* Slide themes */
         .slide-intro { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%); justify-content: center; align-items: center; text-align: center; }
@@ -281,6 +281,42 @@
         .practice-table { width: 100%; max-width: 900px; border-collapse: collapse; margin: 20px 0; }
         .practice-table th { background: rgba(59,130,246,0.2); color: #93c5fd; padding: 12px 15px; text-align: left; }
         .practice-table td { padding: 10px 15px; border-bottom: 1px solid rgba(148,163,184,0.1); font-size: 0.95em; }
+
+        /* Interview section styles */
+        .slide-interview { background: linear-gradient(135deg, #4a1d96 0%, #2e1065 100%); }
+        .badge-interview { background: rgba(192, 132, 252, 0.2); color: #d8b4fe; }
+        .badge-critical { background: rgba(239, 68, 68, 0.3); color: #fca5a5; }
+
+        .answer-block {
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid rgba(148, 163, 184, 0.15);
+            border-radius: 12px;
+            padding: 16px 20px;
+            margin: 10px 0;
+            max-width: 800px;
+            width: 100%;
+        }
+        .answer-block h4 { color: #c4b5fd; font-size: 0.9em; margin-bottom: 8px; font-weight: 600; }
+        .answer-block p { font-size: 0.88em; margin-bottom: 6px; line-height: 1.7; }
+        .answer-block blockquote {
+            border-left: 3px solid #a78bfa;
+            padding-left: 14px;
+            margin: 8px 0;
+            color: #e2e8f0;
+            font-style: italic;
+            font-size: 0.88em;
+            line-height: 1.7;
+        }
+        .answer-block code { background: rgba(30, 41, 59, 0.8); padding: 2px 6px; border-radius: 4px; font-size: 0.9em; }
+
+        .debug-table {
+            max-width: 800px; width: 100%; margin: 15px 0; border-collapse: collapse;
+        }
+        .debug-table th, .debug-table td {
+            padding: 8px 14px; text-align: left; border-bottom: 1px solid rgba(148, 163, 184, 0.1); font-size: 0.85em;
+        }
+        .debug-table th { background: rgba(239, 68, 68, 0.15); color: #fca5a5; font-weight: 600; }
+        .debug-table td code { background: rgba(30, 41, 59, 0.8); padding: 2px 6px; border-radius: 4px; font-size: 0.9em; }
     </style>
 </head>
 <body>
@@ -290,6 +326,7 @@
         <button onclick="goToSection(1)" title="Navigation + State (26 slides)">День 2</button>
         <button onclick="goToSection(2)" title="Performance + Practice (24 slides)">День 3</button>
         <button onclick="goToSection(3)" title="Football Teams Explorer (18 slides)">Assessment</button>
+        <button onclick="goToSection(4)" title="Interview Prep (10 slides)">Interview</button>
     </div>
     <div class="slide-counter"><span id="sectionLabel">День 1</span> • <span id="current">1</span> / <span id="total">25</span></div>
 
@@ -5404,6 +5441,429 @@ return (
         <div class="key-insight" style="margin-top: 30px; text-align: center;">
             13 файлов. 1270 строк. Zero external state management.<br>
             Покажи, что Senior iOS dev может писать clean React Native.
+        </div>
+    </div>
+
+    <!-- ==================== SECTION: Interview ==================== -->
+
+    <!-- ======================= INTERVIEW SLIDE 1: Intel ======================= -->
+    <div class="slide slide-interview" data-section="4" data-section-name="Interview">
+        <h2>Interview Intel (from Vitalii)</h2>
+        <p>Key context from the recruiter. This shapes everything below.</p>
+        <span class="badge badge-critical">Critical</span> <span class="badge badge-interview">Strategy</span>
+
+        <div class="danger" style="max-width: 800px;">
+            <strong>DEBUGGING = #1 differentiator.</strong> Previous candidate had a bug (all stadiums showed same distance). Spent 5-10 min throwing console.logs everywhere, couldn't find the web console, never solved it. Interviewer gave up on her. <em>"Якщо ти зможеш подебажити або знайти проблему швиденько — все буде."</em>
+        </div>
+
+        <div class="key-insight" style="max-width: 800px;">
+            <strong>Competition is low.</strong> You're currently the only candidate in the pipeline. Take-home looks good, no concerns. Live coding task builds on what you already coded.
+        </div>
+
+        <div class="tip" style="max-width: 800px;">
+            <strong>What they evaluate:</strong> Hooks (memo, useEffect, useState) — when to use what. Context providers. Routing. Project structure. Ability to write JS. Ability to debug fast.
+        </div>
+
+        <div class="warning" style="max-width: 800px;">
+            <strong>Rubric sections:</strong> Intro (5 min) → Code Walkthrough (5 min) → Live Coding (35 min) → Backend/API (10 min) → Edge Cases (if time) → Outro (5 min)
+        </div>
+    </div>
+
+    <!-- ======================= INTERVIEW SLIDE 2: Debugging Cheat Sheet ======================= -->
+    <div class="slide slide-concept" data-section="4" data-section-name="Interview" style="background: linear-gradient(135deg, #7f1d1d 0%, #450a0a 100%);">
+        <h2>Debugging Cheat Sheet</h2>
+        <p>Знай це напам'ять. Попередня кандидатка засипалась саме тут.</p>
+        <span class="badge badge-critical">Critical</span> <span class="badge badge-debug">Debug</span>
+
+        <table class="debug-table">
+            <thead><tr><th>Method</th><th>How</th></tr></thead>
+            <tbody>
+                <tr><td><strong>console.log</strong></td><td>Output appears in <strong>Metro terminal</strong> (where <code>npx expo start</code> runs)</td></tr>
+                <tr><td><strong>Chrome DevTools</strong></td><td>Press <code>j</code> in Metro terminal → opens Chrome debugger with full console</td></tr>
+                <tr><td><strong>React DevTools</strong></td><td><code>npx react-devtools</code> → component tree, props, state inspection</td></tr>
+                <tr><td><strong>debugger statement</strong></td><td>Add <code>debugger;</code> in code → pauses execution in Chrome DevTools → inspect variables</td></tr>
+                <tr><td><strong>Expo DevTools</strong></td><td>Shake device / <code>Cmd+D</code> in simulator → "Debug Remote JS"</td></tr>
+                <tr><td><strong>Network tab</strong></td><td>Chrome DevTools Network tab when remote debugging is on</td></tr>
+            </tbody>
+        </table>
+
+        <div class="danger">
+            <strong>If asked "debug same distance for all stadiums":</strong> The bug is likely passing the same stadium name to all distance calculations — closure capturing stale value, or not using the per-card <code>team</code> prop correctly. Check that <code>useStadiumDistance</code> receives the correct <code>stadiumName</code> per card, not a shared reference.
+        </div>
+
+        <div class="code-block">// Step 1: Add targeted console.log (NOT everywhere!)
+console.log('DistanceButton render:', { stadiumName, userLocation });
+
+// Step 2: If value is wrong, trace up the chain:
+// DistanceButton → TeamCard → renderItem → FlatList
+// Check: is stadiumName coming from team.stadium_name?
+
+// Step 3: Or use debugger to pause:
+const calculate = useCallback(async () => {
+  debugger; // ← pauses here, inspect stadiumName in DevTools
+  const coords = await geocodeStadium(stadiumName);
+  // ...
+}, [stadiumName, userLocation]);</div>
+    </div>
+
+    <!-- ======================= INTERVIEW SLIDE 3: Intro Answers ======================= -->
+    <div class="slide slide-interview" data-section="4" data-section-name="Interview">
+        <h2>Section 1: Intro (5 min)</h2>
+        <span class="badge badge-interview">Answers</span>
+
+        <div class="answer-block">
+            <h4>Q: "Tell me about yourself and your experience so far"</h4>
+            <blockquote>I'm Oleh, a mobile engineering leader — 10+ years in iOS, 5 years leading teams. Currently Engineering Manager at Grid Dynamics where I lead cross-functional mobile teams. Before that, Mobile Lead at two startups — Hork App and Aequus Ads — building apps from zero to production. I'm looking for a role where I stay closer to code while driving technical direction. Onward caught me because of the mobile-first product and the React Native stack, which I've been expanding into from my iOS background.</blockquote>
+            <p style="color: #94a3b8;">~90 seconds. Structure: past → present → why this role.</p>
+        </div>
+    </div>
+
+    <!-- ======================= INTERVIEW SLIDE 4: Code Walkthrough ======================= -->
+    <div class="slide slide-interview" data-section="4" data-section-name="Interview">
+        <h2>Section 2: Code Walkthrough (5 min)</h2>
+        <span class="badge badge-interview">Answers</span>
+
+        <div class="answer-block">
+            <h4>Q: "Walk me through your solution — what are you most proud of?"</h4>
+            <blockquote>Most proud of the data loading strategy. The API has 259 teams across 26 pages. I fetch page 1, get total_pages, then Promise.all the remaining 25 pages in parallel. Loads in ~1-2s and enables instant client-side filtering with zero additional network calls. For a dataset this size, it's the right tradeoff. The useTeams hook is the single source of truth — fetch, filter, sort, error handling — like a ViewModel in iOS.</blockquote>
+        </div>
+
+        <div class="answer-block">
+            <h4>Q: "What would you change with more time?"</h4>
+            <blockquote>Three things: (1) Team detail screen with expo-router dynamic routes, (2) Unit tests for filtering logic and Haversine formula, (3) Skeleton loading instead of spinner for perceived performance.</blockquote>
+        </div>
+
+        <div class="answer-block">
+            <h4>Q: "Trade-offs you'd flag upfront?"</h4>
+            <blockquote>keyExtractor uses item.name which isn't unique — teams can appear in multiple leagues. Would use item.id or composite key. Also, all data in memory — fine for 259, won't scale to 10K. And filters apply immediately on chip tap — for larger data, a modal with deferred "Apply" would reduce re-renders.</blockquote>
+        </div>
+    </div>
+
+    <!-- ======================= INTERVIEW SLIDE 5: Architecture Q&A ======================= -->
+    <div class="slide slide-interview" data-section="4" data-section-name="Interview">
+        <h2>Section 2b: Architecture Questions</h2>
+        <span class="badge badge-interview">Answers</span> <span class="badge badge-arch">Architecture</span>
+
+        <div class="answer-block">
+            <h4>Q: "How did you structure your state management?"</h4>
+            <blockquote>Pure React primitives — useState + useMemo + useCallback. The useTeams hook owns all state: raw teams array, loading/error, and filters. filteredTeams is a useMemo that recomputes only when teams or filters change. No Redux or Zustand — with one screen and simple data flow, that'd be over-engineering. If this grew to multiple screens sharing state, I'd introduce Zustand.</blockquote>
+        </div>
+
+        <div class="answer-block">
+            <h4>Q: "Why this component breakdown?"</h4>
+            <blockquote>Single responsibility each: SearchBar (controlled input), FilterControls (collapsible chips, owns expand state), TeamCard (wrapped in React.memo, pure display), DistanceButton (3-state UI: idle → loading → result/error via useStadiumDistance). Hooks separated too: useDebounce is generic/reusable, useLocation handles permissions, useStadiumDistance combines geocoding + Haversine.</blockquote>
+        </div>
+
+        <div class="answer-block">
+            <h4>Q: "How does filtering work — client-side or API-driven?"</h4>
+            <blockquote>100% client-side. After loading all 259 teams, useMemo chains: name substring match (lowercased) → minimum value threshold → minimum titles threshold → sort descending by valuation. Debounced search (300ms) prevents useMemo recalculating on every keystroke.</blockquote>
+        </div>
+
+        <div class="answer-block">
+            <h4>Q: "How would this hold up with 10,000 teams?"</h4>
+            <blockquote>It wouldn't — three changes: (1) Server-side filtering — pass search/filter as query params, (2) Cursor-based pagination — FlatList onEndReached fetches next page, (3) Debounced API calls instead of in-memory filter. The migration is clean — useTeams already abstracts the data source, so swapping from in-memory to API-driven is isolated to that one hook.</blockquote>
+        </div>
+    </div>
+
+    <!-- ======================= INTERVIEW SLIDE 6: Live Coding Overview ======================= -->
+    <div class="slide slide-interview" data-section="4" data-section-name="Interview">
+        <h2>Section 3: Live Coding (35 min)</h2>
+        <p>One of three tasks. All build on your take-home. <strong>Option A most likely</strong> since you only built the list.</p>
+        <span class="badge badge-critical">Live Coding</span>
+
+        <div class="answer-block">
+            <h4>Option A — Team Detail Screen (MOST LIKELY)</h4>
+            <p><strong>They look for:</strong> expo-router dynamic routes, param passing, avoiding unnecessary re-fetches.</p>
+            <p><strong>3 files to touch:</strong> <code>app/_layout.tsx</code>, <code>src/components/TeamCard.tsx</code>, <code>app/team/[id].tsx</code> (new)</p>
+        </div>
+
+        <div class="answer-block">
+            <h4>Option B — Pagination (infinite scroll)</h4>
+            <p><strong>They look for:</strong> <code>FlatList.onEndReached</code>, loading state management, deduplication.</p>
+            <p><strong>2 files to touch:</strong> <code>src/hooks/useTeams.ts</code>, <code>app/index.tsx</code></p>
+        </div>
+
+        <div class="answer-block">
+            <h4>Option C — Favorites with AsyncStorage persistence</h4>
+            <p><strong>They look for:</strong> AsyncStorage read/write, Context provider, tab navigation.</p>
+            <p><strong>5 files to touch:</strong> <code>src/context/FavoritesContext.tsx</code> (new), <code>app/_layout.tsx</code> (rewrite), move <code>index.tsx</code> into tabs, <code>app/favorites.tsx</code> (new), <code>TeamCard.tsx</code></p>
+        </div>
+
+        <div class="key-insight" style="max-width: 800px;">
+            Next 3 slides have <strong>complete, copy-paste-ready code</strong> for each option. Every file. Every import. Every style.
+        </div>
+    </div>
+
+    <!-- ======================= INTERVIEW SLIDE 7: Option A Detail Screen ======================= -->
+    <div class="slide slide-interview" data-section="4" data-section-name="Interview">
+        <h2>Option A: Team Detail Screen — Full Code</h2>
+        <p><strong>Step 1/3:</strong> Update <code>app/_layout.tsx</code> — add the detail route</p>
+        <span class="badge badge-critical">Live Coding</span>
+
+        <div class="code-block">// app/_layout.tsx — REPLACE entire file
+import { Stack } from 'expo-router';
+
+export default function RootLayout() {
+  return (
+    &lt;Stack screenOptions={{ headerShown: false }}&gt;
+      &lt;Stack.Screen name="index" /&gt;
+      &lt;Stack.Screen
+        name="team/[id]"
+        options={{
+          headerShown: true,
+          headerBackTitle: 'Teams',
+          headerStyle: { backgroundColor: '#f8f9fa' },
+          headerShadowVisible: false,
+        }}
+      /&gt;
+    &lt;/Stack&gt;
+  );
+}</div>
+
+        <p><strong>Step 2/3:</strong> Update <code>src/components/TeamCard.tsx</code> — make it tappable</p>
+
+        <div class="code-block">// src/components/TeamCard.tsx — REPLACE entire file
+import React, { memo } from 'react';
+import { View, Text, StyleSheet, Pressable } from 'react-native';
+import { router } from 'expo-router';
+import { FootballTeam, Location } from '../types';
+import { formatValue } from '../utils/format';
+import { DistanceButton } from './DistanceButton';
+
+interface TeamCardProps {
+  team: FootballTeam;
+  userLocation: Location | null;
+  rank: number;
+}
+
+function TeamCardComponent({ team, userLocation, rank }: TeamCardProps) {
+  const handlePress = () =&gt; {
+    router.push({
+      pathname: '/team/[id]',
+      params: { id: String(team.id), data: JSON.stringify(team) },
+    });
+  };
+
+  return (
+    &lt;Pressable
+      onPress={handlePress}
+      style={({ pressed }) =&gt; [styles.card, pressed &amp;&amp; styles.cardPressed]}
+    &gt;
+      &lt;View style={styles.header}&gt;
+        &lt;View style={styles.rankBadge}&gt;
+          &lt;Text style={styles.rankText}&gt;{rank}&lt;/Text&gt;
+        &lt;/View&gt;
+        &lt;View style={styles.headerText}&gt;
+          &lt;Text style={styles.name} numberOfLines={1}&gt;{team.name}&lt;/Text&gt;
+          &lt;Text style={styles.league} numberOfLines={1}&gt;{team.league}&lt;/Text&gt;
+        &lt;/View&gt;
+        &lt;Text style={styles.value}&gt;{formatValue(team.estimated_value_numeric)}&lt;/Text&gt;
+      &lt;/View&gt;
+      &lt;View style={styles.statsRow}&gt;
+        &lt;View style={styles.stat}&gt;
+          &lt;Text style={styles.statValue}&gt;{team.number_of_league_titles_won}&lt;/Text&gt;
+          &lt;Text style={styles.statLabel}&gt;Titles&lt;/Text&gt;
+        &lt;/View&gt;
+        &lt;View style={styles.stat}&gt;
+          &lt;Text style={styles.statValue}&gt;{team.number_of_champions_league_won}&lt;/Text&gt;
+          &lt;Text style={styles.statLabel}&gt;UCL&lt;/Text&gt;
+        &lt;/View&gt;
+        &lt;View style={styles.stat}&gt;
+          &lt;Text style={styles.statValue}&gt;{team.total_silverware_count}&lt;/Text&gt;
+          &lt;Text style={styles.statLabel}&gt;Trophies&lt;/Text&gt;
+        &lt;/View&gt;
+        &lt;View style={styles.stat}&gt;
+          &lt;Text style={styles.statValue}&gt;{team.stadium_capacity.toLocaleString()}&lt;/Text&gt;
+          &lt;Text style={styles.statLabel}&gt;Capacity&lt;/Text&gt;
+        &lt;/View&gt;
+      &lt;/View&gt;
+      &lt;View style={styles.footer}&gt;
+        &lt;Text style={styles.stadium} numberOfLines={1}&gt;{team.stadium_name}&lt;/Text&gt;
+        &lt;DistanceButton stadiumName={team.stadium_name} userLocation={userLocation} /&gt;
+      &lt;/View&gt;
+    &lt;/Pressable&gt;
+  );
+}
+
+export const TeamCard = memo(TeamCardComponent);
+// styles: card, cardPressed, header, rankBadge, rankText, headerText,
+// name, league, value, statsRow, stat, statValue, statLabel, footer, stadium</div>
+    </div>
+
+    <!-- ======================= INTERVIEW SLIDE 8: Option A [id].tsx + Option B ======================= -->
+    <div class="slide slide-interview" data-section="4" data-section-name="Interview">
+        <h2>Option A: [id].tsx + Option B: Pagination</h2>
+        <span class="badge badge-critical">Live Coding</span>
+
+        <div class="code-block">// app/team/[id].tsx — CREATE (mkdir app/team/ first)
+import React from 'react';
+import { View, Text, ScrollView, StyleSheet } from 'react-native';
+import { useLocalSearchParams, Stack } from 'expo-router';
+import { FootballTeam } from '../../src/types';
+import { formatValue } from '../../src/utils/format';
+import { DistanceButton } from '../../src/components/DistanceButton';
+import { useLocation } from '../../src/hooks/useLocation';
+
+export default function TeamDetailScreen() {
+  const { data } = useLocalSearchParams&lt;{ id: string; data: string }&gt;();
+  const team: FootballTeam = JSON.parse(data);
+  const { location: userLocation } = useLocation();
+
+  return (
+    &lt;&gt;
+      &lt;Stack.Screen options={{ title: team.name }} /&gt;
+      &lt;ScrollView style={styles.container}&gt;
+        &lt;View style={styles.hero}&gt;
+          &lt;Text style={styles.teamName}&gt;{team.name}&lt;/Text&gt;
+          &lt;Text style={styles.league}&gt;{team.league} · {team.nation}&lt;/Text&gt;
+          &lt;Text style={styles.value}&gt;{formatValue(team.estimated_value_numeric)}&lt;/Text&gt;
+        &lt;/View&gt;
+        {/* Sections: Achievements (StatBox grid), People (InfoRow), Records, Squad, Stadium + DistanceButton */}
+      &lt;/ScrollView&gt;
+    &lt;/&gt;
+  );
+}
+// Helper components: StatBox({ label, value }), InfoRow({ label, value })</div>
+
+        <p style="margin-top: 20px;"><strong>Option B: Pagination</strong> — key changes to <code>useTeams.ts</code></p>
+
+        <div class="code-block">// useTeams.ts — replace fetch-all with page-by-page
+const [hasMore, setHasMore] = useState(true);
+const [isLoadingMore, setIsLoadingMore] = useState(false);
+const pageRef = useRef(1);
+const seenIdsRef = useRef(new Set&lt;number&gt;());
+
+const loadMore = useCallback(async () =&gt; {
+  if (isLoadingMore || !hasMore || isLoading) return;
+  setIsLoadingMore(true);
+  const nextPage = pageRef.current + 1;
+  const res = await fetch(`${BASE_URL}?page=${nextPage}`);
+  const data: TeamsApiResponse = await res.json();
+  // Deduplicate with seenIdsRef
+  const newTeams = data.data.filter(t =&gt; {
+    if (seenIdsRef.current.has(t.id)) return false;
+    seenIdsRef.current.add(t.id);
+    return true;
+  });
+  setTeams(prev =&gt; [...prev, ...newTeams]);
+  pageRef.current = nextPage;
+  setHasMore(nextPage &lt; data.total_pages);
+  setIsLoadingMore(false);
+}, [isLoadingMore, hasMore, isLoading]);
+
+// In index.tsx FlatList:
+// onEndReached={loadMore}
+// onEndReachedThreshold={0.5}
+// ListFooterComponent={isLoadingMore ? &lt;ActivityIndicator /&gt; : null}</div>
+    </div>
+
+    <!-- ======================= INTERVIEW SLIDE 9: Option C Favorites ======================= -->
+    <div class="slide slide-interview" data-section="4" data-section-name="Interview">
+        <h2>Option C: Favorites — Full Code</h2>
+        <span class="badge badge-critical">Live Coding</span>
+
+        <div class="code-block">// src/context/FavoritesContext.tsx — CREATE
+import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+const STORAGE_KEY = '@favorites';
+interface FavoritesContextType {
+  favorites: Set&lt;number&gt;;
+  isFavorite: (id: number) =&gt; boolean;
+  toggleFavorite: (id: number) =&gt; void;
+}
+
+const FavoritesContext = createContext&lt;FavoritesContextType&gt;({
+  favorites: new Set(), isFavorite: () =&gt; false, toggleFavorite: () =&gt; {},
+});
+
+export function FavoritesProvider({ children }: { children: React.ReactNode }) {
+  const [favorites, setFavorites] = useState&lt;Set&lt;number&gt;&gt;(new Set());
+  useEffect(() =&gt; {
+    AsyncStorage.getItem(STORAGE_KEY).then(data =&gt; {
+      if (data) setFavorites(new Set(JSON.parse(data)));
+    });
+  }, []);
+  useEffect(() =&gt; {
+    AsyncStorage.setItem(STORAGE_KEY, JSON.stringify([...favorites]));
+  }, [favorites]);
+  const isFavorite = useCallback((id: number) =&gt; favorites.has(id), [favorites]);
+  const toggleFavorite = useCallback((id: number) =&gt; {
+    setFavorites(prev =&gt; {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
+  }, []);
+  return (
+    &lt;FavoritesContext.Provider value={{ favorites, isFavorite, toggleFavorite }}&gt;
+      {children}
+    &lt;/FavoritesContext.Provider&gt;
+  );
+}
+export const useFavorites = () =&gt; useContext(FavoritesContext);</div>
+
+        <div class="code-block">// app/_layout.tsx — wrap in FavoritesProvider + Tabs
+import { Tabs } from 'expo-router';
+import { FavoritesProvider } from '../src/context/FavoritesContext';
+
+export default function RootLayout() {
+  return (
+    &lt;FavoritesProvider&gt;
+      &lt;Tabs screenOptions={{ headerShown: false, tabBarActiveTintColor: '#1a73e8' }}&gt;
+        &lt;Tabs.Screen name="index" options={{ title: 'Teams' }} /&gt;
+        &lt;Tabs.Screen name="favorites" options={{ title: 'Favorites' }} /&gt;
+      &lt;/Tabs&gt;
+    &lt;/FavoritesProvider&gt;
+  );
+}
+
+// TeamCard: add useFavorites() hook, heart button with toggleFavorite(team.id)
+// app/favorites.tsx: filter teams by favorites.has(team.id), reuse TeamCard
+// npm install: npx expo install @react-native-async-storage/async-storage</div>
+    </div>
+
+    <!-- ======================= INTERVIEW SLIDE 10: Backend + Edge Cases + Outro ======================= -->
+    <div class="slide slide-interview" data-section="4" data-section-name="Interview">
+        <h2>Backend/API + Edge Cases + Outro</h2>
+        <span class="badge badge-interview">Answers</span> <span class="badge badge-arch">Architecture</span>
+
+        <div class="answer-block">
+            <h4>Q: "GraphQL query for teams with filtering?"</h4>
+            <blockquote>Connection-style: filter { search, minValue }, first/after for cursor pagination. Return edges → node { id, name, league, estimatedValue, stadiumName } + cursor, plus pageInfo { hasNextPage, endCursor }.</blockquote>
+        </div>
+
+        <div class="answer-block">
+            <h4>Q: "Offset or cursor-based pagination?"</h4>
+            <blockquote>Cursor-based. Offset breaks on insert/delete between pages — duplicates or skips. Cursor points to specific item, stable for infinite scroll. Maps to onEndReached → fetch with after: lastCursor.</blockquote>
+        </div>
+
+        <div class="answer-block">
+            <h4>Q: "Auth tokens in Apollo/fetch?"</h4>
+            <blockquote>Apollo link chain: authLink reads token from expo-secure-store, sets Authorization: Bearer. errorLink catches 401s, refreshes token, retries transparently.</blockquote>
+        </div>
+
+        <div class="answer-block">
+            <h4>Q: "What if geocoding API fails?"</h4>
+            <blockquote>Already handled: 3-state DistanceButton (idle/loading/result-or-error). Nominatim timeout → "Unavailable". mountedRef guard. Module-level Map cache for retaps.</blockquote>
+        </div>
+
+        <div class="answer-block">
+            <h4>Questions to ask them:</h4>
+            <p>1. Full RN or mix with native? &nbsp; 2. State management at scale? &nbsp; 3. Biggest mobile tech challenge? &nbsp; 4. Feature lifecycle design → release?</p>
+        </div>
+
+        <table class="debug-table" style="margin-top: 15px;">
+            <thead><tr><th>Known Bug (mention proactively)</th><th>Fix</th></tr></thead>
+            <tbody>
+                <tr><td><code>keyExtractor</code> uses <code>item.name</code></td><td>Use <code>item.id</code> or composite key</td></tr>
+                <tr><td>SafeAreaView from <code>react-native</code></td><td>Use <code>react-native-safe-area-context</code></td></tr>
+                <tr><td><code>useLocation</code> requests GPS on mount</td><td>Lazy — request on first distance tap</td></tr>
+            </tbody>
+        </table>
+
+        <div class="key-insight" style="max-width: 800px; margin-top: 15px; text-align: center;">
+            <strong>Remember:</strong> You're the only candidate. Take-home is solid. Debug fast, explain clearly, you're in.
         </div>
     </div>
 
