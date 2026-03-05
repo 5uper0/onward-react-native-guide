@@ -12,7 +12,7 @@
             color: #e2e8f0;
             line-height: 1.6;
         }
-        .slide { display: none; height: 100vh; padding: 40px; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+        .slide { display: none; min-height: 100vh; padding: 40px; }
         .slide.active { display: flex; flex-direction: column; align-items: center; justify-content: flex-start; }
         
         /* Slide themes */
@@ -5448,31 +5448,31 @@ return (
 
     <!-- ======================= INTERVIEW SLIDE 1: Intel ======================= -->
     <div class="slide slide-interview" data-section="4" data-section-name="Interview">
-        <h2>Interview Intel (from Vitalii)</h2>
-        <p>Key context from the recruiter. This shapes everything below.</p>
+        <h2>Interview Prep Strategy</h2>
+        <p>Common patterns for React Native technical interviews. Prepare for these areas.</p>
         <span class="badge badge-critical">Critical</span> <span class="badge badge-interview">Strategy</span>
 
         <div class="danger" style="max-width: 800px;">
-            <strong>DEBUGGING = #1 differentiator.</strong> Previous candidate had a bug (all stadiums showed same distance). Spent 5-10 min throwing console.logs everywhere, couldn't find the web console, never solved it. Interviewer gave up on her. <em>"Якщо ти зможеш подебажити або знайти проблему швиденько — все буде."</em>
+            <strong>DEBUGGING is often the #1 differentiator.</strong> A common interview scenario: the app has a bug (e.g., all items show the same calculated value). Candidates who can quickly locate the issue using proper debugging tools stand out. Throwing random console.logs without a strategy is a red flag.
         </div>
 
         <div class="key-insight" style="max-width: 800px;">
-            <strong>Competition is low.</strong> You're currently the only candidate in the pipeline. Take-home looks good, no concerns. Live coding task builds on what you already coded.
+            <strong>Live coding typically builds on the take-home.</strong> Expect to extend the project you submitted — adding a screen, feature, or fixing a bug in real time.
         </div>
 
         <div class="tip" style="max-width: 800px;">
-            <strong>What they evaluate:</strong> Hooks (memo, useEffect, useState) — when to use what. Context providers. Routing. Project structure. Ability to write JS. Ability to debug fast.
+            <strong>What interviewers typically evaluate:</strong> Hooks (memo, useEffect, useState) — when to use what. Context providers. Routing. Project structure. Ability to write JS. Ability to debug fast.
         </div>
 
         <div class="warning" style="max-width: 800px;">
-            <strong>Rubric sections:</strong> Intro (5 min) → Code Walkthrough (5 min) → Live Coding (35 min) → Backend/API (10 min) → Edge Cases (if time) → Outro (5 min)
+            <strong>Typical interview structure:</strong> Intro (5 min) → Code Walkthrough (5 min) → Live Coding (35 min) → Backend/API (10 min) → Edge Cases (if time) → Outro (5 min)
         </div>
     </div>
 
     <!-- ======================= INTERVIEW SLIDE 2: Debugging Cheat Sheet ======================= -->
     <div class="slide slide-concept" data-section="4" data-section-name="Interview" style="background: linear-gradient(135deg, #7f1d1d 0%, #450a0a 100%);">
         <h2>Debugging Cheat Sheet</h2>
-        <p>Знай це напам'ять. Попередня кандидатка засипалась саме тут.</p>
+        <p>Debugging is a common differentiator in RN interviews. Know these tools by heart.</p>
         <span class="badge badge-critical">Critical</span> <span class="badge badge-debug">Debug</span>
 
         <table class="debug-table">
@@ -5488,7 +5488,7 @@ return (
         </table>
 
         <div class="danger">
-            <strong>If asked "debug same distance for all stadiums":</strong> The bug is likely passing the same stadium name to all distance calculations — closure capturing stale value, or not using the per-card <code>team</code> prop correctly. Check that <code>useStadiumDistance</code> receives the correct <code>stadiumName</code> per card, not a shared reference.
+            <strong>Common bug pattern — "same value for all items":</strong> Usually caused by a closure capturing a stale value, or not using per-item props correctly. For example, if every card shows the same distance, check that each component instance receives its own unique prop (e.g., <code>stadiumName</code>), not a shared reference.
         </div>
 
         <div class="code-block">// Step 1: Add targeted console.log (NOT everywhere!)
@@ -5568,7 +5568,7 @@ const calculate = useCallback(async () => {
     <!-- ======================= INTERVIEW SLIDE 6: Live Coding Overview ======================= -->
     <div class="slide slide-interview" data-section="4" data-section-name="Interview">
         <h2>Section 3: Live Coding (35 min)</h2>
-        <p>One of three tasks. All build on your take-home. <strong>Option A most likely</strong> since you only built the list.</p>
+        <p>One of three common tasks. All build on the take-home. <strong>Option A is most common</strong> for list-based projects.</p>
         <span class="badge badge-critical">Live Coding</span>
 
         <div class="answer-block">
@@ -5863,7 +5863,7 @@ export default function RootLayout() {
         </table>
 
         <div class="key-insight" style="max-width: 800px; margin-top: 15px; text-align: center;">
-            <strong>Remember:</strong> You're the only candidate. Take-home is solid. Debug fast, explain clearly, you're in.
+            <strong>Remember:</strong> Debug fast, explain your reasoning clearly, and show you can extend the codebase confidently. That's what separates strong candidates.
         </div>
     </div>
 
